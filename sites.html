@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZENITH Site Totals</title>
+  <link rel="stylesheet" href="./styles.css?v=20260420c" />
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">ZENITH Trial</p>
+        <h1>Site Totals</h1>
+        <p class="muted">Current totals by site within the selected country.</p>
+      </div>
+      <div class="hero-side">
+        <div class="pill-wrap">
+          <div id="sites-updated-at" class="pill">Loading sites</div>
+          <div class="pill small">UI v20260420c</div>
+          <label class="muted small">Country: <select id="site-country-select"></select></label>
+          <a href="/" class="refresh-link">Current Dashboard</a>
+          <a href="/history.html" class="refresh-link">History</a>
+        </div>
+      </div>
+    </header>
+
+    <section class="summary-grid" id="site-summary-grid"></section>
+
+    <section class="card">
+      <div class="card-header">
+        <div>
+          <h2 id="site-table-title">Site Totals</h2>
+          <span class="muted small">Current site totals for the selected country</span>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th><button class="sort-btn" data-key="site">Site <span class="sort-indicator"></span></button></th>
+              <th class="metric-col"><button class="sort-btn" data-key="screened"><span class="sort-indicator"></span> Screened</button></th>
+              <th class="metric-col"><button class="sort-btn" data-key="randomized"><span class="sort-indicator"></span> Randomized</button></th>
+              <th class="metric-col"><button class="sort-btn" data-key="ecvd_randomized_percent"><span class="sort-indicator"></span> eCVD</button></th>
+              <th class="metric-col"><button class="sort-btn" data-key="screening"><span class="sort-indicator"></span> In Screening</button></th>
+              <th class="metric-col"><button class="sort-btn" data-key="ecvd_screening_percent"><span class="sort-indicator"></span> eCVD</button></th>
+              <th class="metric-col"><button class="sort-btn" data-key="failed"><span class="sort-indicator"></span> Screen Failed</button></th>
+              <th class="metric-col"><button class="sort-btn" data-key="eot"><span class="sort-indicator"></span> End of Treatment</button></th>
+            </tr>
+          </thead>
+          <tbody id="site-body">
+            <tr><td colspan="8" class="muted">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <script src="./sites.js?v=20260420c"></script>
+</body>
+</html>

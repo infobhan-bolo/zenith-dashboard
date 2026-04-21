@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>com.ishir.zenith-requests.daily-6am-store</string>
+    <key>ProgramArguments</key>
+    <array>
+      <string>/Applications/Xcode.app/Contents/Developer/usr/bin/python3</string>
+      <string>/Users/bolo/.openclaw/workspace/zenith-dashboard-requests/fetch_zenith_requests.py</string>
+      <string>store</string>
+    </array>
+    <key>WorkingDirectory</key>
+    <string>/Users/bolo/.openclaw/workspace/zenith-dashboard-requests</string>
+    <key>StartCalendarInterval</key>
+    <dict>
+      <key>Hour</key>
+      <integer>6</integer>
+      <key>Minute</key>
+      <integer>0</integer>
+    </dict>
+    <key>StandardOutPath</key>
+    <string>/Users/bolo/.openclaw/workspace/zenith-dashboard-requests/daily-store.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/bolo/.openclaw/workspace/zenith-dashboard-requests/daily-store.err.log</string>
+  </dict>
+</plist>

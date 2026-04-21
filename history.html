@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZENITH Enrollment History</title>
+  <link rel="stylesheet" href="./styles.css?v=20260420b" />
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">ZENITH Trial</p>
+        <h1>Enrollment History</h1>
+        <p class="muted">Daily 6 AM stored snapshots over time.</p>
+      </div>
+      <div class="hero-side">
+        <div class="pill-wrap">
+          <div id="history-updated-at" class="pill">Loading history</div>
+          <div class="pill small">UI v20260420b</div>
+          <label class="muted small">View: <select id="trend-select"></select></label>
+          <a href="/" class="refresh-link">Current Dashboard</a>
+          <a href="/sites.html" class="refresh-link">Sites</a>
+        </div>
+      </div>
+    </header>
+
+    <section class="summary-grid" id="sparkline-grid"></section>
+
+    <section class="card">
+      <div class="card-header">
+        <div>
+          <h2 id="trend-title">Overall Trends</h2>
+          <span id="trend-subtitle" class="muted small">Daily totals with day-over-day deltas</span>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th class="metric-col">Screened</th>
+              <th class="delta-col">Δ</th>
+              <th class="metric-col">Randomized</th>
+              <th class="delta-col">Δ</th>
+              <th class="metric-col">eCVD</th>
+              <th class="metric-col">In Screening</th>
+              <th class="delta-col">Δ</th>
+              <th class="metric-col">eCVD</th>
+              <th class="metric-col">Screen Failed</th>
+              <th class="delta-col">Δ</th>
+              <th class="metric-col">End of Treatment</th>
+              <th class="delta-col">Δ</th>
+            </tr>
+          </thead>
+          <tbody id="history-body">
+            <tr><td colspan="13" class="muted">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <script src="./history.js?v=20260420b"></script>
+</body>
+</html>

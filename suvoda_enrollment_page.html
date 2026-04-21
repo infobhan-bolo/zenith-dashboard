@@ -1,0 +1,488 @@
+
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js">
+<!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+
+    <title>BLINDED Enrollment Summary</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600" rel="stylesheet">
+    <link href="/Alnylam_ALN-AGT01-008/css/bootstrap/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="/Alnylam_ALN-AGT01-008/css/bootstrap/bootstrap-1200width.css" rel="stylesheet" type="text/css" />
+    <link href="/Alnylam_ALN-AGT01-008/css/bootstrap/font-awesome.css" rel="stylesheet" type="text/css" />
+    <link href="/Alnylam_ALN-AGT01-008/css/base-admin/css/base-admin.css" rel="stylesheet" type="text/css" />
+    <link href="/Alnylam_ALN-AGT01-008/css/base-admin/css/base-admin-responsive.css" rel="stylesheet" type="text/css" />
+    <link href="/Alnylam_ALN-AGT01-008/css/base-admin/css/pages/dashboard.css" rel="stylesheet" type="text/css" />
+    <link href="/Alnylam_ALN-AGT01-008/css/custom/suvoda.irt.common.css" rel="stylesheet" type="text/css" />
+    <link href="/Alnylam_ALN-AGT01-008/css/kendo/kendo.common.min.css" rel="stylesheet" type="text/css" />
+    <link href="/Alnylam_ALN-AGT01-008/css/kendo/kendo.suvoda.min.css" rel="stylesheet" type="text/css" />
+    <link href="/Alnylam_ALN-AGT01-008/css/kendo/mobile/kendo.default.mobile.min.css" rel="stylesheet" type="text/css" />
+    <link href="/Alnylam_ALN-AGT01-008/css/kendo/kendo.suvoda-overrides.css" rel="stylesheet" type="text/css" />
+    <link href="/Alnylam_ALN-AGT01-008/css/custom/select2.css" rel="stylesheet" type="text/css" />
+    <link href="/Alnylam_ALN-AGT01-008/css/custom/custom_styles.css" rel="stylesheet" type="text/css" />
+    <link href="/Alnylam_ALN-AGT01-008/css/custom/custom_styles_tables.css" rel="stylesheet" type="text/css" />
+    <link href="/Alnylam_ALN-AGT01-008/css/custom/validation_styles.css" rel="stylesheet" type="text/css" />
+    
+    
+
+
+    <style id="aCJ">
+        body {
+            display: none !important;
+        }
+    </style>
+
+    <script type="text/javascript">
+
+        if (self === top) {
+            var aCJ = document.getElementById("aCJ");
+            aCJ.parentNode.removeChild(aCJ);
+        } else {
+            top.location = self.location;
+        }
+    
+//# sourceURL=_LayoutBase.cshtml-1.js
+</script>
+
+    
+    
+
+
+    <link rel="shortcut icon" href="/Alnylam_ALN-AGT01-008/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/Alnylam_ALN-AGT01-008/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <!--[if lt IE 7]>
+        <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
+    <![endif]-->
+
+<script>
+        SuvodaCommons = { Global: {}, Localization: {}, ResourceMetadata: {} };
+        SuvodaCommons.Localization.CurrentUiCulture = 'en-US';
+        SuvodaCommons.Localization.DefaultUiCulture = 'en-US';
+        SuvodaCommons.Localization.BootboxResourceSets = [{"ResourceManagerName":"Suvoda.IRT.Resources.BootboxResources","Hashcode":null,"ResourceSetDictionary":{"CANCEL":"No","OK":"Yes","CONFIRM":"Yes"},"Culture":"en-US"}];
+        SuvodaCommons.Localization.CommonFormatters =  {"SiteNameIdFormat":"{0} ({1})","MessageWithDetailsInParantheses":"{0} ({1})","SelectPlaceholder":"< {0} >","FirstNameLastNameUsername":"{0} {1} ({2})","DepotFormat":"{0} - {1}","SiteName":"{0} - {1}","SelfSupport_ReplaceableBulkDrugAssignments_DisplayValue":"{0} | {1} | {2} ({3})","ScreeningAndSubjectNumberFormat":"{1} ({0})","LotIsOneToManyDrugFormat":"{0}{1}","WithColon":"{0}:","SelfSupport_FinishedLot_ExpiratinDate":"{0} ({1})","LotExpirationDate":"{0} {1}","SiteFormat":"{0} - {1}","DrugCodeDescription":"{0} - {1}","ExpirationDateStudyDateFormat":"({0})","DepotNameIdFormat":"{0} ({1})","Dropdown_Text_Template":"{0} ({1})","PickNumberRange":"{0} - {1}","LotNumberFormat":"{0} ({1})","DepotName":"{0} - {1}","SelfSupport_DrugCode_DrugDescription":"{0} - {1}"};
+        SuvodaCommons.Localization.CommonLabels = {"CancelButtonText":"Cancel","CancelChangesButtonText":"Cancel Changes","String1":"","ChildInlineDeleteButtonText":"Remove","ApplyFilterButtonTooltip":"Apply Filter","DeleteCommandText":"Are you sure you want to delete this item?","CountryLabel":"Country","SiteLabel":"Site","LotNumber":"Lot Number","SelectPlaceholder":"Select","LotMultiselectControlPlaceholder":"Select Lots","TransactionDateTimeLocal":"Transaction Local Date Time","ExportToCsvButtonText":"Export","DrugDescriptionMultiselectPlaceholder":"Select Drug Description(s)","InlineDeleteButtonText":"Delete","EditButtonText":"Edit","CopyButtonText":"Copy","ExportToPdfButtonText":"Export to PDF","RoleMultiselectControlPlaceholder":"Select Roles","PagerTotalItemsMessageTemplate":"Total items:","CopyOfLabel":"Copy of","TransactionDateTimeUTC":"Transaction UTC Date Time","DepotIdLabel":"Depot ID","ChangesLabel":"The following changes have been made:","SaveButtonText":"Save","DropDownOptionText":"< Select >","FinishedLotNumber":"Finished Lot Number","CopyLabel":"Copy","AlertDateTimeLocal":"Alert Generation Local Date Time","AdhocReportsLabel":"Ad-Hoc Reports","ApplyChanges_ButtonText":"Apply Changes","ActivateAllButtonText":"Activate All","DropDownListOptionLabelText":"Please Select:","AlertDateTimeUTC":"Alert Generation UTC Date Time","ImportTranslations_Warning":"Please remember to use the import and export options to update the translations for this entity","ExpirationDate":"Expiration Date","AddTranslationsButtonText":"Add Translations","ApplyFilterButtonText":"Apply Filter","AllSubjects_Label":"All Subjects","SiteIdLabel":"Site ID","DepotMultiselectControlPlaceholder":"Select Depots","DepotLabel":"Depot","SiteMultiselectControlPlaceholder":"Select Sites","SaveChangesLowerButtonText":"Save changes","ImportFileButtonText":"Import ...","NotApplicableLabel":"N/A","DownloadSampleFileButtonText":"Download Sample File","ExportToExcelLinkTooltip":"Export to Excel","No":"No","OK":"OK","NewValueLabel":"New Value","DuplicateButtonText":"Duplicate","All":"All","Yes":"Yes","DectivateAllButtonText":"Deactivate All","False":"False","KendoEditPopupTitle":"Edit","UserMultiselectControlPlaceholder":"Select Users","UserName":"User Name","DepotNameLabel":"Depot Name","NoneValue":"None","AllSites_Label":"All Sites","UpdateButtonText":"Update","PasteButtonText":"Paste","ImportButtonText":"Import","MultiselectPlaceholder":"Select...","UpdatedFieldLabel":"Updated Field","AnyAvailable":"Any available","DrugCodeLabel":"Drug Code","CountryMultiselectControlPlaceholder":"Select Countries","CancelChangesLowerButtonText":"Cancel changes","SaveChangesButtonText":"Save Changes","AllDrugCodes":"All Drug Codes","BackOut_ButtonText":"Back Out","GridPagerInfoMessageTemplate":"{0} - {1} of {2} items shown","NotAValue":"N/A","OldValueLabel":"Old Value","OptionalPluralForm":"(s)","Name":"Name","True":"True"};
+        SuvodaCommons.Localization.ValidationResources = {"KendoGridSelectAll_CbSelectorValidation":"The key cbSelector is not specified.","MultiTimeSpan_Unique":"Can't add same element twice.","Number_Invalid":"Please input a valid number.","FieldRequired_Validation":"The {0} field is required.","EmailAddress_Validation":"Email is not valid email","KendoGridSelectAll_ModelFieldNameValidation":"The key modelFieldName is not specified.","KendoGridSelectAll_OptionsFormatValidation":"Option container has incorrect format.","Range_Validation":"The field {0} must be between {1} and {2}.","StringLength_Validation":"The field {0} must be a string with a maximum length of {1}.","HttpRequestValidationException":"Invalid input entered.","KendoGridSelectAll_CbAllSelectorValidation":"The key cbAllSelector is not specified.","Date_Validation":"{0} is an invalid date.","KendoGridSelectAll_GridIdValidation":"The key gridId is not specified."};
+
+        SuvodaCommons.Global.DateDisplayFormatString = 'dd-MMM-yyyy';
+        SuvodaCommons.Global.DateTimeDisplayFormatString = 'dd-MMM-yyyy hh:mm tt';
+        SuvodaCommons.Global.DateTimeInputFormatString = 'M/d/yyyy h:mm tt';
+        SuvodaCommons.Global.TimeDisplayFormatString = 'hh:mm tt';
+        SuvodaCommons.Global.MvcDateDisplayFormatString = '{0:dd-MMM-yyyy}';
+        SuvodaCommons.Global.MvcDateTimeDisplayFormatString = '{0:dd-MMM-yyyy hh\:mm tt}';
+        SuvodaCommons.Global.MvcTimeDisplayFormatString = '{0:hh\:mm tt}';
+        SuvodaCommons.Global.MvcEncodedDateDisplayFormatString = '{0:dd-MMM-yyyy}';
+        SuvodaCommons.Global.MvcEncodedDateTimeDisplayFormatString = '{0:dd-MMM-yyyy hh:mm tt}';
+        SuvodaCommons.Global.MvcEncodedTimeDisplayFormatString = '{0:hh:mm tt}';
+        SuvodaCommons.Global.DateInputFormatString = 'M/d/yyyy';
+        SuvodaCommons.Global.TimeInputFormatString = 'h:mm tt';
+        SuvodaCommons.Global.DateTimeInputFormatStringInvariantCulture = 'MM/dd/yyyy HH:mm';
+        SuvodaCommons.Global.DecimalMaxValue = 79228162514264337593543950335;
+        SuvodaCommons.Global.IntegerMaxValue = 2147483647;
+        SuvodaCommons.Global.ApplicationPath = '/Alnylam_ALN-AGT01-008';
+
+        SuvodaCommons.ResourceMetadata.DisplayResourceKeys = false;     
+</script>
+
+    
+<script src="/Alnylam_ALN-AGT01-008/lib/jquery/jquery.min.js"></script>
+<script src="/Alnylam_ALN-AGT01-008/lib/underscore.js/underscore-min.js"></script>
+<script src="/Alnylam_ALN-AGT01-008/js/suvoda/suvoda.common.js"></script>
+<script src="/Alnylam_ALN-AGT01-008/js/suvoda/suvoda.resource.metadata.js"></script>
+<script src="/Alnylam_ALN-AGT01-008/js/kendo/kendo.all.min.js"></script>
+<script src="/Alnylam_ALN-AGT01-008/js/kendo/kendo.aspnetmvc.min.js"></script>
+<script src="/Alnylam_ALN-AGT01-008/js/kendo/jszip.min.js"></script>
+<script src="/Alnylam_ALN-AGT01-008/js/suvoda/suvoda.kendo.js"></script>
+    <script src="/Alnylam_ALN-AGT01-008/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/Alnylam_ALN-AGT01-008/lib/bootbox.js/bootbox.min.js"></script>
+<script src="/Alnylam_ALN-AGT01-008/js/suvoda/suvoda.bootbox.js"></script>
+<script src="/Alnylam_ALN-AGT01-008/js/select2/select2.min.js"></script>
+<script src="/Alnylam_ALN-AGT01-008/js/suvoda/suvoda.selectSingleDisplay.js"></script>
+<script src="/Alnylam_ALN-AGT01-008/js/suvoda/extendedPropertiesViewControl.js"></script>
+<script src="/Alnylam_ALN-AGT01-008/js/suvoda/extendedPropertiesEditorControl.js"></script>
+<script src="/Alnylam_ALN-AGT01-008/js/suvoda/kendoGridAutoFitColumns.js"></script>
+
+    <script src="/Alnylam_ALN-AGT01-008/js/kendo/messages/kendo.messages.en-US.min.js"></script>
+    <script src="/Alnylam_ALN-AGT01-008/js/kendo/cultures/kendo.culture.en-US.min.js"></script>
+    <script>
+        jQuery(function () {
+            kendo.culture(SuvodaCommons.Localization.CurrentUiCulture);
+        });
+</script>
+
+    
+
+
+<div class="subnavbar navbar-fixed-top">
+        <div class="environment-banner prod-environment-banner">
+            <div class="container">
+                <span class="environment-message-container">
+                    You are in the Production Environment
+                </span>
+                <div class="language-selector-container pull-right">
+
+
+
+
+<script>
+    function onPreferredLanguageChanged(e) {
+        var url = "/Alnylam_ALN-AGT01-008/StudyAdministration/UserLanguage/SetPreferredLanguage";
+        var selectedLanguageId = this.dataItem().Value;
+        $.post(url, { languageId: selectedLanguageId }, function (result) {
+            if (result) {
+                location.reload();
+            }
+        });
+    };
+</script>
+
+<style>
+    .language-selector {
+        width: auto;
+        min-width: 150px;
+        max-width: 200px;
+        margin: 0 !important;
+        padding: 0 !important;
+        border-style: none !important;
+        text-align: left;
+    }
+</style>
+
+<span>
+        <i class="icon-globe-white nav-icon"></i>
+
+
+    <input class="language-selector" id="MenuLanguageId" name="MenuLanguageId" style="background-color: #467481; color: white;" type="text" value="" /><script>kendo.syncReady(function(){jQuery("#MenuLanguageId").kendoDropDownList({"change":onPreferredLanguageChanged,"dataTextField":"Text","dataValueField":"Value","dataSource":[{"Text":"English (United States)","Value":"en-US"}]});});</script>
+</span>                </div>
+            </div>
+        </div>
+    <div class="subnavbar-inner">
+        <div class="container">
+            <a class="brand" href="/Alnylam_ALN-AGT01-008">
+                <img src="/Alnylam_ALN-AGT01-008/img/SuvodaLogo.svg" width="192" style="margin-top: 8px" />
+            </a>
+            <ul class="pull-left">
+
+
+
+<li class="brand-divider"></li>
+
+        <li>
+            <a href="https://prod001.suvoda.com/Alnylam_TrialManager/Home/Redirect">
+                <div class="nav-text"><i class="icon-sitemap nav-icon"></i><br style="line-height:27px;" />My Studies</div>
+            </a>
+        </li>
+<li><a href="/Alnylam_ALN-AGT01-008/Subjects/Subjects">
+                <div class="nav-text"><i class="icon-user nav-icon"></i><br style="line-height:27px;" />Subjects</div>
+        </a></li><li><a href="/Alnylam_ALN-AGT01-008/Reports">
+                <div class="nav-text"><i class="icon-bar-chart nav-icon"></i><br style="line-height:27px;" />Reports</div>
+        </a></li><li><a href="/Alnylam_ALN-AGT01-008/StudyAdministration">
+                <div class="nav-text"><i class="icon-cogs nav-icon"></i><br style="line-height:27px;" />Admin</div>
+        </a></li>            </ul>
+
+
+
+<div class="outer-container">
+    <div class="pull-right">
+        <ul class="nav">
+            <li class="dropdown">
+                    <a href="#" class="dropdown-toggle nav-user" data-toggle="dropdown" data-bs-toggle="dropdown">
+                        <i class="icon-user icon-white"></i> Ishir Bhan<b class="caret "></b>
+                    </a>
+                <ul class="dropdown-menu">
+<li><a href="#" onclick="showWindow(); return false;">Product Version</a></li>
+                            <li class="divider"></li>
+                            <li><a href="/Alnylam_ALN-AGT01-008/Home/Help">Help</a></li>
+                            <li><a href="/Alnylam_ALN-AGT01-008/StudyAdministration/UserProfile/UpdateProfile">Update Profile</a></li>
+                            <li><a href="/Alnylam_ALN-AGT01-008/Account/ChangePassword">Change Suvoda Password</a></li>
+                            <li><a href="/Alnylam_ALN-AGT01-008/Account/Logout">Logout</a></li>
+                </ul>
+            </li>
+        </ul>
+
+        <ul class="unstyled">
+
+                <li class="nav-user">ALN-AGT01-008</li>
+
+
+                <li class="nav-user">Medical Monitor</li>
+        </ul>
+    </div>
+</div>
+
+<div id="ProductVersion" name="ProductVersion" style="display:none"></div><script>kendo.syncReady(function(){jQuery("#ProductVersion").kendoWindow({"open":onOpen,"refresh":onRefresh,"scrollable":true,"visible":false,"content":null,"draggable":false,"actions":["Close"],"resizable":false,"title":"Product Version","modal":true,"width":"600px"});});</script>
+
+<script type='text/javascript'>
+
+    function showWindow() {
+        var productVersionWindow = $("#ProductVersion").data("kendoWindow");
+        productVersionWindow.refresh("/Alnylam_ALN-AGT01-008/Home/Version");
+        productVersionWindow.center().open();
+    };
+
+    function onOpen(e) {
+        this.wrapper.css({ top: 100, minHeight: 100 });
+        SuvodaCommons.Global.showBusyIndicator(this.wrapper);
+    }
+
+    function onRefresh(e) {
+        SuvodaCommons.Global.hideBusyIndicator(this.wrapper);
+    }
+
+//# sourceURL=_UserNavItemPartial.cshtml.js
+</script>
+
+<style type="text/css">
+    #ProductVersion_wnd_title {
+        color: #3f2a56;
+        font-family: "Open Sans";
+        font-weight: bold;
+    }
+
+    ul.unstyled > li {
+        padding-bottom: 5px;
+    }
+
+    ul.unstyled {
+        margin: 0;
+    }
+</style>        </div>
+    </div>
+</div>
+
+
+<style>
+#MenuLanguageId-list {
+    border-style: none !important;
+    padding: 0 !important;
+}
+#MenuLanguageId-list .k-list > .k-state-selected,
+#MenuLanguageId-list .k-list > .k-state-selected.k-state-focused,
+#MenuLanguageId-list .k-list > .k-state-selected.k-state-highlight {
+    background-color: #6D7278 !important;
+    border-color: #6D7278 !important;
+    border-radius: 0;
+    color: white !important;
+}
+#MenuLanguageId-list .k-list > .k-item.k-state-hover {
+    background-color: #E2E3E4 !important;
+    border-color: #E2E3E4 !important;
+}
+</style>
+
+    <div class="container">
+        <div id="notifications_content">
+            
+        </div>
+        <div id="success_notifications_content">
+        </div>
+        <div id="warning_notifications_content">
+        </div>
+        <div id="error_notifications_content">
+        </div>
+    </div>
+
+    <div class="container">
+        
+    
+
+    </div>
+    <div class="container">
+        
+    
+
+
+        <div id="body_content" class="jsBodyContent">
+            
+
+
+
+
+
+
+
+<h2>BLINDED Enrollment Summary</h2>
+
+<div class="row">
+    <div class="span12">
+        <hr />
+        <form method="GET" class="form-inline">
+            <div class="row controls-row control-group">
+                <div class="span6">
+                    <label>Countries:</label>
+                    <div class="row controls-row">
+                        <select id="countries" name="countries" class="span6"></select>
+                    </div>
+                </div>
+                <div class="span6">
+                    <label>Sites:</label>
+                    <div class="row controls-row">
+                        <select id="sites" name="sites" class="span6"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="row controls-row control-group">
+                <div class="span4">
+                    <button title=Apply Filter class="btn">Apply Filter</button>
+                </div>
+            </div>
+            <script>
+
+                $(document).ready(function() {
+                    var countrySelector = $('#countries');
+                    var siteSelector = $('#sites');
+                    var countrySelectorConfig = window.SuvodaSelect2.getDefaultConfig('Select Countries', "/Alnylam_ALN-AGT01-008/Reports/BaseReport/SearchSiteCountries");
+                    var siteSelectorConfig = window.SuvodaSelect2.getDefaultConfig('Select Sites', "/Alnylam_ALN-AGT01-008/Reports/BaseReport/SearchSitesForCurrentStudy");
+
+                    countrySelector.select2(countrySelectorConfig);
+                    siteSelector.select2(siteSelectorConfig);
+
+
+                });
+
+            //# sourceURL=Index-1.cshtml.js
+            </script>
+        </form>
+        <hr />
+    </div>
+</div>
+
+<div id="EnrollmentPieChart" name="EnrollmentPieChart"></div><script>kendo.syncReady(function(){jQuery("#EnrollmentPieChart").kendoChart({"legend":{"position":"top"},"series":[{"categoryField":"Status","color":colorHandler,"field":"TotalCount","type":"donut"}],"title":{"text":"Current Subject Status Summary"},"dataSource":{"schema":{"model":{"fields":{"Color":{"type":"string"},"Status":{"type":"string"},"Details":{"type":"object"},"TotalCount":{"type":"number"}}}},"data":[{"Color":"#A263A8","Status":"Screened","Details":[{"Country":"Argentina","Count":1},{"Country":"Austria","Count":6},{"Country":"Australia","Count":26},{"Country":"Belgium","Count":3},{"Country":"Bulgaria","Count":59},{"Country":"Canada","Count":20},{"Country":"Chile","Count":8},{"Country":"Czech Republic","Count":14},{"Country":"Germany","Count":14},{"Country":"Spain","Count":9},{"Country":"United Kingdom","Count":71},{"Country":"Greece","Count":10},{"Country":"Hungary","Count":5},{"Country":"Italy","Count":1},{"Country":"Japan","Count":19},{"Country":"New Zealand","Count":3},{"Country":"Poland","Count":49},{"Country":"Portugal","Count":6},{"Country":"Romania","Count":16},{"Country":"Slovakia","Count":3},{"Country":"United States","Count":324},{"Country":"South Africa","Count":96}],"TotalCount":763},{"Color":"#3E0450","Status":"Screen Failed","Details":[{"Country":"Austria","Count":2},{"Country":"Australia","Count":7},{"Country":"Bulgaria","Count":9},{"Country":"Brazil","Count":1},{"Country":"Canada","Count":11},{"Country":"Czech Republic","Count":5},{"Country":"Germany","Count":4},{"Country":"Spain","Count":4},{"Country":"United Kingdom","Count":51},{"Country":"Greece","Count":1},{"Country":"Hungary","Count":1},{"Country":"Japan","Count":16},{"Country":"New Zealand","Count":13},{"Country":"Poland","Count":13},{"Country":"Portugal","Count":3},{"Country":"Romania","Count":3},{"Country":"United States","Count":747},{"Country":"South Africa","Count":39}],"TotalCount":930},{"Color":"#C4D82E","Status":"Randomized","Details":[{"Country":"Austria","Count":1},{"Country":"Australia","Count":21},{"Country":"Belgium","Count":1},{"Country":"Bulgaria","Count":32},{"Country":"Brazil","Count":1},{"Country":"Canada","Count":26},{"Country":"Czech Republic","Count":11},{"Country":"Germany","Count":7},{"Country":"Spain","Count":13},{"Country":"France","Count":1},{"Country":"United Kingdom","Count":44},{"Country":"Greece","Count":3},{"Country":"Hungary","Count":2},{"Country":"Italy","Count":1},{"Country":"Japan","Count":32},{"Country":"New Zealand","Count":13},{"Country":"Poland","Count":24},{"Country":"Portugal","Count":7},{"Country":"Romania","Count":8},{"Country":"Slovakia","Count":3},{"Country":"United States","Count":1067},{"Country":"South Africa","Count":71}],"TotalCount":1389},{"Color":"#7EA23C","Status":"End of Treatment","Details":[{"Country":"United Kingdom","Count":1},{"Country":"United States","Count":7}],"TotalCount":8}]},"seriesDefaults":{"donut":{"labels":{"background":"transparent","color":"white","font":"14px Arial,Helvetica,sans-serif","template":"#=dataItem.TotalCount#","visible":true},"overlay":{"gradient":"none"},"tooltip":{"template":"\u003cspan style=\u0027color: white\u0027\u003e\u003cb\u003e#=dataItem.Status#: #=dataItem.TotalCount#\u003c/b\u003e\u003cbr\u003e\u003cdiv style=\u0027text-align:left; padding:6px;\u0027\u003e#=renderCountriesTemplate(dataItem)#\u003c/div\u003e\u003c/span\u003e","visible":true}}}});});</script>
+<br />
+<div id="EnrollmentLineChart" name="EnrollmentLineChart"></div><script>kendo.syncReady(function(){jQuery("#EnrollmentLineChart").kendoChart({"categoryAxis":[{"majorGridLines":{"visible":false},"categories":["01-Aug-2025","01-Sep-2025","01-Oct-2025","01-Nov-2025","01-Dec-2025","01-Jan-2026","01-Feb-2026","01-Mar-2026","01-Apr-2026","11-Apr-2026"]}],"legend":{"position":"top"},"series":[{"color":"#A263A8","name":"Screened","data":[0,0,44,292,605,893,1211,1736,2825,3119],"type":"line"},{"color":"#4E5057","name":"Unique Screenings","data":[0,0,44,292,604,891,1206,1724,2803,3090],"type":"line"},{"color":"#3E0450","name":"Screen Failed","data":[0,0,4,51,129,251,380,537,840,930],"type":"line"},{"color":"#C4D82E","name":"Randomized","data":[0,0,11,61,252,439,610,812,1234,1397],"type":"line"},{"color":"#7EA23C","name":"End of Treatment","data":[0,0,0,0,4,4,5,6,8,8],"type":"line"}],"title":{"text":"Enrollment Chart"},"tooltip":{"template":"\u003cspan style=\u0027color: white\u0027\u003e#= series.name #: #= value #\u003c/span\u003e","visible":true},"valueAxis":[{"axisCrossingValue":[0],"labels":{"step":2},"line":{"visible":false},"title":{"text":"Number of subjects","visible":true},"type":"numeric"}]});});</script>
+<br />
+<div class="row">
+    <div class="span12">
+        <div id="SiteReportGrid" name="SiteReportGrid"></div><script>kendo.syncReady(function(){jQuery("#SiteReportGrid").kendoGrid({"excelExport":SuvodaCommons.GridFunctions.excelExportEventHandler,"excel":{"allPages":true,"fileName":"ALN-AGT01-008_BLINDED_EnrollmentSummary_11-Apr-2026 12:00 AM","filterable":false,"forceProxy":false,"proxyURL":"/Alnylam_ALN-AGT01-008/Reports/BaseReport/ExcelExportSave"},"groupable":{"enabled":true},"sortable":true,"columns":[{"title":"Site","width":"100px","field":"SiteId","filterable":{"messages":{"selectedItemsFormat":"{0} selected items"},"checkAll":false},"encoded":true},{"title":"Site Name","width":"100px","field":"Name","filterable":{"messages":{"selectedItemsFormat":"{0} selected items"},"checkAll":false},"encoded":true},{"title":"PI Last Name","width":"100px","field":"PILastName","filterable":{"messages":{"selectedItemsFormat":"{0} selected items"},"checkAll":false},"encoded":true},{"title":"Country","width":"100px","field":"Country","filterable":{"messages":{"selectedItemsFormat":"{0} selected items"},"checkAll":false},"encoded":true},{"title":"Screened","width":"120px","field":"SiteCounts[0].Value","filterable":{"messages":{"selectedItemsFormat":"{0} selected items"},"checkAll":false},"encoded":true},{"title":"Unique Screenings","width":"120px","field":"SiteCounts[1].Value","filterable":{"messages":{"selectedItemsFormat":"{0} selected items"},"checkAll":false},"encoded":true},{"title":"Screen Failed","width":"120px","field":"SiteCounts[2].Value","filterable":{"messages":{"selectedItemsFormat":"{0} selected items"},"checkAll":false},"encoded":true},{"title":"Randomized","width":"120px","field":"SiteCounts[3].Value","filterable":{"messages":{"selectedItemsFormat":"{0} selected items"},"checkAll":false},"encoded":true},{"title":"End of Treatment","width":"120px","field":"SiteCounts[4].Value","filterable":{"messages":{"selectedItemsFormat":"{0} selected items"},"checkAll":false},"encoded":true}],"pageable":{"buttonCount":10},"filterable":{"messages":{"selectedItemsFormat":"{0} selected items"}},"resizable":true,"scrollable":{"height":"400px"},"toolbar":"\u003ca class=\u0027k-button k-button-icontext k-grid-export\u0027 title=\u0027Export to Excel\u0027 href=\u0027/Alnylam_ALN-AGT01-008/Reports/EnrollmentSummary/Export\u0027 data-report-file-name=\u0027ALN-AGT01-008_BLINDED_EnrollmentSummary_11-Apr-2026 12:00 AM\u0027 data-report-title=\u0027BLINDED Enrollment Summary\u0027\u003e\u003ci class=\u0027irt-i-excel irt-icon\u0027\u003e\u003c/i\u003e\u003c/a\u003e","dataSource":{"type":(function(){if(kendo.data.transports['aspnetmvc-ajax']){return 'aspnetmvc-ajax';} else{throw new Error('The kendo.aspnetmvc.min.js script is not included.');}})(),"transport":{"read":{"url":"/Alnylam_ALN-AGT01-008/Reports/EnrollmentSummary/SiteCounts_Read","data":SuvodaCommons.GridFunctions.encodeIndexer},"prefix":""},"pageSize":20,"page":1,"groupPaging":false,"total":0,"serverPaging":true,"serverSorting":true,"serverFiltering":true,"serverGrouping":true,"serverAggregates":true,"filter":[],"schema":{"data":"Data","total":"Total","errors":"Errors","model":{"fields":{"SiteId":{"type":"string"},"Name":{"type":"string"},"InvestigatorId":{"type":"string"},"PILastName":{"type":"string"},"Country":{"type":"string"},"SiteCounts":{"type":"object"},"SiteCounts[0].Value":{"type":"number"},"SiteCounts[1].Value":{"type":"number"},"SiteCounts[2].Value":{"type":"number"},"SiteCounts[3].Value":{"type":"number"},"SiteCounts[4].Value":{"type":"number"}}}}}});});</script>
+    </div>
+</div>
+
+<script id="countries-template" type="text/x-kendo-template">
+    #$.each(data.Details, function (index, item) {#
+    <span>${item.Country} ${item.Count}</span>
+    <br />
+    #});#
+</script>
+
+<script type="text/javascript">
+
+    function renderCountriesTemplate(data) {
+        return kendo.Template.compile($('#countries-template').html())(data);
+    }
+
+    function colorHandler(item) {
+        return item.dataItem.Color;
+    }
+
+//# sourceURL=Index-2.cshtml.js
+</script>
+
+
+
+        </div>
+    </div>
+
+    <script src="/Alnylam_ALN-AGT01-008/lib/jquery-validate/jquery.validate.min.js"></script>
+    <script src="/Alnylam_ALN-AGT01-008/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script src="/Alnylam_ALN-AGT01-008/js/base-admin/base.js"></script>
+
+    <script>
+
+        jQuery(function () {
+            var ntbOptions = kendo.ui.NumericTextBox.prototype.options;
+            ntbOptions.format = "#";
+            ntbOptions.min = 0;
+            ntbOptions.step = 1;
+
+            jQuery.extend(jQuery.validator.methods, {
+                number: function (value, element) {
+                    return this.optional(element) || kendo.parseFloat(value) != null;
+                }
+            });
+
+            $("input.kendo-numeric-positive").kendoNumericTextBox({
+                min: 0
+            });
+
+            kendo.ui.Upload.fn._supportsDrop = function () { return false; };
+        });
+    
+//# sourceURL=_LayoutBase.cshtml-2.js
+</script>
+
+    
+    <script src="/Alnylam_ALN-AGT01-008/js/suvoda/suvoda.select2.js"></script>
+    
+
+
+    <script id="template_successAlert" type="text/x-kendo-template">
+        <div class="alert alert-block alert-success">
+            <button data-dismiss="alert" data-bs-dismiss="alert" class="close" type="button">×</button>
+            #= message #
+        </div>
+    </script>
+
+    <script id="template_errorAlert" type="text/x-kendo-template">
+        <div class="alert alert-block alert-error">
+            <button data-dismiss="alert" data-bs-dismiss="alert" class="close" type="button">×</button>
+            #= message #
+        </div>
+    </script>
+
+    <script id="template_warningAlert" type="text/x-kendo-template">
+        <div class="alert alert-block alert-warning">
+            <button data-dismiss="alert" data-bs-dismiss="alert" class="close" type="button">×</button>
+            #= message #
+        </div>
+    </script>
+
+    <script>
+        SuvodaCommons.Global._errorTemplate = kendo.template($("#template_errorAlert").html());
+        SuvodaCommons.Global._successTemplate = kendo.template($("#template_successAlert").html());
+        SuvodaCommons.Global._warningTemplate = kendo.template($("#template_warningAlert").html());
+</script>
+
+    <input name="__RequestVerificationToken" type="hidden" value="CfDJ8EP3ebIyoutNv9-ob7wyN-DSABFAGviR8GADDJSpx-saPwBUXyLzTMrfY-b9qDek0YHfNkiH7PwNLKjaqEkhiDZtovJXCcbnOAw1XXbLw20io6q4ycsi6rbKMc1kF8v65k-GVAR--Hhw9rMaO-O5Jz6efHsNWI7H-SVrtn5IYLazLgTFXcLE7_rDHsIxD-BWCQ" />
+
+    <script>
+
+        var token = $('input[name="__RequestVerificationToken"]').val();
+
+
+        // find all forms and add the anti-forgery token if it doesn't already exist
+        $('form').filter(function (idx, frm) {
+            return $(frm).find('input[name="__RequestVerificationToken"]').length === 0;
+        }).append('<input type="hidden" name="__RequestVerificationToken" value="' + token + '" />');
+
+        $(document).ajaxSend(function (event, jqxhr, settings) {
+            if (settings.type === "POST") {
+                jqxhr.setRequestHeader("__RequestVerificationToken", token);
+            }
+        });
+
+        $(document)
+            .ready(function () {
+                /*
+                 * Retrieve first toolbar in a kendo grid and change it to header toolbar.
+                 */
+                $(".k-grid .k-toolbar")
+                    .first()
+                    .removeClass("k-toolbar")
+                    .addClass("k-header")
+                    .addClass("k-grid-top");
+            });
+    
+//# sourceURL=_LayoutBase.cshtml-3.js
+</script>
+
+</body>
+</html>

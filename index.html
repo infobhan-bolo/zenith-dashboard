@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZENITH Enrollment Dashboard</title>
+  <link rel="stylesheet" href="./styles.css?v=20260420b" />
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">ZENITH Trial</p>
+        <h1>Enrollment Dashboard</h1>
+        <p class="muted">Overall totals plus country-level enrollment breakdown.</p>
+      </div>
+      <div class="hero-side">
+        <div class="pill-wrap">
+          <div id="updated-at" class="pill">Current snapshot</div>
+          <div class="pill small">UI v20260420b</div>
+          <a href="#" id="refresh-link" class="refresh-link">Refresh</a>
+          <a href="/history.html" class="refresh-link">History</a>
+          <a href="/sites.html" class="refresh-link">Sites</a>
+        </div>
+      </div>
+    </header>
+
+    <section class="summary-grid" id="summary-grid"></section>
+
+    <section class="card">
+      <div class="card-header">
+        <h2>Country Breakdown</h2>
+        <span class="muted small">Sorted by Randomized</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th><button class="sort-btn" data-key="country">Country <span class="sort-indicator"></span></button></th>
+              <th class="metric-col"><button class="sort-btn" data-key="screened"><span class="sort-indicator"></span> Screened</button></th>
+              <th class="delta-col">Δ</th>
+              <th class="metric-col"><button class="sort-btn" data-key="randomized"><span class="sort-indicator"></span> Randomized</button></th>
+              <th class="delta-col">Δ</th>
+              <th class="metric-col">eCVD</th>
+              <th class="metric-col"><button class="sort-btn" data-key="screening"><span class="sort-indicator"></span> In Screening</button></th>
+              <th class="delta-col">Δ</th>
+              <th class="metric-col">eCVD</th>
+              <th class="metric-col"><button class="sort-btn" data-key="failed"><span class="sort-indicator"></span> Screen Failed</button></th>
+              <th class="delta-col">Δ</th>
+              <th class="metric-col"><button class="sort-btn" data-key="eot"><span class="sort-indicator"></span> End of Treatment</button></th>
+              <th class="delta-col">Δ</th>
+            </tr>
+          </thead>
+          <tbody id="country-body">
+            <tr><td colspan="13" class="muted">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <script src="./app.js?v=20260420b"></script>
+</body>
+</html>
