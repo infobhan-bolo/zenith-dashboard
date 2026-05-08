@@ -13,30 +13,6 @@ function derivePercent(bucket) {
   return Math.round((yes / total) * 100);
 }
 
-function latestHistorySnapshot() {
-  return historyRows.length ? historyRows[historyRows.length - 1] : null;
-}
-
-function fallbackOverallEcvdPercent(label) {
-  const latest = latestHistorySnapshot();
-  if (!latest) return null;
-  return label === 'Randomized'
-    ? derivePercent(latest.established_cvd?.['Randomized'])
-    : label === 'In Screening'
-      ? derivePercent(latest.established_cvd?.['In Screening'])
-      : null;
-}
-
-function fallbackCountryEcvdPercent(country, kind) {
-  const latest = latestHistorySnapshot();
-  if (!latest) return null;
-  const row = (latest.countries || []).find(r => r.country === country);
-  if (!row) return null;
-  return kind === 'randomized'
-    ? (row.ecvd_randomized_percent ?? null)
-    : (row.ecvd_screening_percent ?? null);
-}
-
 function esc(s) {
   return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
@@ -77,14 +53,11 @@ function renderSummary() {
     const deltaClass = baseline !== null && baseline !== undefined && item.value < baseline ? 'delta down' : 'delta';
     const series = historyRows.map(r => r.totals[item.label] || 0);
     const cvd = payload.established_cvd || {};
-    let cvdPercent = item.label === 'Randomized'
+    const cvdPercent = item.label === 'Randomized'
       ? derivePercent(cvd['Randomized'])
       : item.label === 'In Screening'
         ? derivePercent(cvd['In Screening'])
         : null;
-    if ((cvdPercent === null || cvdPercent === 0) && (item.label === 'Randomized' || item.label === 'In Screening')) {
-      cvdPercent = fallbackOverallEcvdPercent(item.label);
-    }
     if (!series.length) series.push(item.value);
     const path = sparklinePath(series);
     return `
@@ -148,10 +121,9 @@ function countryDeltaCell(curr, prev) {
   return `<td class="${cls}">${text}</td>`;
 }
 
-function ecvdCell(value, fallbackValue = null) {
-  const display = (value === null || value === undefined || value === 0) ? fallbackValue : value;
-  if (display === null || display === undefined) return '<td class="number ecvd-cell blank"></td>';
-  return `<td class="number ecvd-cell">${display}%</td>`;
+function ecvdCell(value) {
+  if (value === null || value === undefined) return '<td class="number ecvd-cell blank"></td>';
+  return `<td class="number ecvd-cell">${value}%</td>`;
 }
 
 function renderTable() {
@@ -178,10 +150,10 @@ function renderTable() {
         ${countryDeltaCell(row.screened, prev.screened)}
         <td class="number">${row.randomized}</td>
         ${countryDeltaCell(row.randomized, prev.randomized)}
-        ${ecvdCell(row.ecvd_randomized_percent, fallbackCountryEcvdPercent(row.country, 'randomized'))}
+        ${ecvdCell(row.ecvd_randomized_percent)}
         <td class="number">${row.screening}</td>
         ${countryDeltaCell(row.screening, prev.screening)}
-        ${ecvdCell(row.ecvd_screening_percent, fallbackCountryEcvdPercent(row.country, 'screening'))}
+        ${ecvdCell(row.ecvd_screening_percent)}
         <td class="number">${row.failed}</td>
         ${countryDeltaCell(row.failed, prev.failed)}
         <td class="number">${row.eot}</td>

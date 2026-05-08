@@ -101,6 +101,11 @@ def shared_strings(zf):
     return vals
 
 
+def col_letter(ref):
+    m = re.match(r'([A-Z]+)', ref or '')
+    return m.group(1) if m else ''
+
+
 def parse_sheet_rows(blob):
     with zipfile.ZipFile(BytesIO(blob)) as zf:
         sheet_path = 'xl/worksheets/sheet.xml'
@@ -112,8 +117,10 @@ def parse_sheet_rows(blob):
     rows = []
     for row in root.findall('.//x:sheetData/x:row', ns):
         row_num = int(row.attrib.get('r', '0') or '0')
-        cells = []
+        cells = {}
         for c in row.findall('x:c', ns):
+            ref = c.attrib.get('r', '')
+            col = col_letter(ref)
             cell_type = c.attrib.get('t')
             v = c.find('x:v', ns)
             is_node = c.find('x:is', ns)
@@ -123,7 +130,7 @@ def parse_sheet_rows(blob):
                 value = '' if v is None else (v.text or '')
                 if cell_type == 's' and value.isdigit() and int(value) < len(shared):
                     value = shared[int(value)]
-            cells.append(value)
+            cells[col] = value
         rows.append((row_num, cells))
     return rows
 
@@ -166,19 +173,19 @@ def parse_workbook(blob):
     ignored_subject_ids = load_ecvd_ignore_ids()
 
     for row in data_rows:
-        if len(row) < 8:
-            continue
-        previous_subject_number = str(row[0]).strip() if len(row) >= 1 else ''
+        previous_subject_number = str(row.get('A', '')).strip()
         if previous_subject_number:
             continue
-        subject_number = str(row[1]).strip() if len(row) >= 2 else ''
+        subject_number = str(row.get('B', '')).strip()
         exclude_from_ecvd = subject_number in ignored_subject_ids
-        site = str(row[2]).strip() if len(row) >= 3 else ''
-        country = str(row[6]).strip()
-        status = str(row[7]).strip()
-        cvd_value = str(row[15]).strip() if len(row) >= 16 else ''
+        site = str(row.get('C', '')).strip()
+        country = str(row.get('G', '')).strip()
+        status = str(row.get('H', '')).strip()
+        cvd_value = str(row.get('P', '')).strip()
         if not country or not status:
             continue
+
+        cvd_is_yes = cvd_value in {'Yes', 'High Risk for CVD'}
 
         if country not in by_country:
             by_country[country] = {
@@ -222,7 +229,7 @@ def parse_workbook(blob):
                 established_cvd['In Screening']['total'] += 1
                 rec['ecvd_screening_total'] += 1
                 site_rec['ecvd_screening_total'] += 1
-                if cvd_value == 'Yes':
+                if cvd_is_yes:
                     established_cvd['In Screening']['yes'] += 1
                     rec['ecvd_screening_yes'] += 1
                     site_rec['ecvd_screening_yes'] += 1
@@ -242,7 +249,7 @@ def parse_workbook(blob):
                 established_cvd['Randomized']['total'] += 1
                 rec['ecvd_randomized_total'] += 1
                 site_rec['ecvd_randomized_total'] += 1
-                if cvd_value == 'Yes':
+                if cvd_is_yes:
                     established_cvd['Randomized']['yes'] += 1
                     rec['ecvd_randomized_yes'] += 1
                     site_rec['ecvd_randomized_yes'] += 1
