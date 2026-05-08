@@ -3,6 +3,40 @@ let sortDirection = 'desc';
 let payload = { totals: {}, countries: [] };
 let historyRows = [];
 
+function derivePercent(bucket) {
+  if (bucket === null || bucket === undefined) return null;
+  if (typeof bucket === 'number') return bucket;
+  if (typeof bucket.percent === 'number') return bucket.percent;
+  const yes = bucket.yes ?? bucket.count ?? null;
+  const total = bucket.total ?? null;
+  if (yes === null || total === null || total === 0) return null;
+  return Math.round((yes / total) * 100);
+}
+
+function latestHistorySnapshot() {
+  return historyRows.length ? historyRows[historyRows.length - 1] : null;
+}
+
+function fallbackOverallEcvdPercent(label) {
+  const latest = latestHistorySnapshot();
+  if (!latest) return null;
+  return label === 'Randomized'
+    ? derivePercent(latest.established_cvd?.['Randomized'])
+    : label === 'In Screening'
+      ? derivePercent(latest.established_cvd?.['In Screening'])
+      : null;
+}
+
+function fallbackCountryEcvdPercent(country, kind) {
+  const latest = latestHistorySnapshot();
+  if (!latest) return null;
+  const row = (latest.countries || []).find(r => r.country === country);
+  if (!row) return null;
+  return kind === 'randomized'
+    ? (row.ecvd_randomized_percent ?? null)
+    : (row.ecvd_screening_percent ?? null);
+}
+
 function esc(s) {
   return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
@@ -43,11 +77,14 @@ function renderSummary() {
     const deltaClass = baseline !== null && baseline !== undefined && item.value < baseline ? 'delta down' : 'delta';
     const series = historyRows.map(r => r.totals[item.label] || 0);
     const cvd = payload.established_cvd || {};
-    const cvdPercent = item.label === 'Randomized'
-      ? cvd['Randomized']?.percent
+    let cvdPercent = item.label === 'Randomized'
+      ? derivePercent(cvd['Randomized'])
       : item.label === 'In Screening'
-        ? cvd['In Screening']?.percent
+        ? derivePercent(cvd['In Screening'])
         : null;
+    if ((cvdPercent === null || cvdPercent === 0) && (item.label === 'Randomized' || item.label === 'In Screening')) {
+      cvdPercent = fallbackOverallEcvdPercent(item.label);
+    }
     if (!series.length) series.push(item.value);
     const path = sparklinePath(series);
     return `
@@ -111,9 +148,10 @@ function countryDeltaCell(curr, prev) {
   return `<td class="${cls}">${text}</td>`;
 }
 
-function ecvdCell(value) {
-  if (value === null || value === undefined) return '<td class="number ecvd-cell blank"></td>';
-  return `<td class="number ecvd-cell">${value}%</td>`;
+function ecvdCell(value, fallbackValue = null) {
+  const display = (value === null || value === undefined || value === 0) ? fallbackValue : value;
+  if (display === null || display === undefined) return '<td class="number ecvd-cell blank"></td>';
+  return `<td class="number ecvd-cell">${display}%</td>`;
 }
 
 function renderTable() {
@@ -123,15 +161,27 @@ function renderTable() {
     const prev = prevMap.get(row.country) || {};
     return `
       <tr>
-        <td><a class="country-link" href="./history.html?country=${encodeURIComponent(row.country)}">${esc(row.country)}</a></td>
+        <td>
+          <div class="country-link-wrap">
+            <span class="country-link-label">${esc(row.country)}</span>
+            <span class="country-link-actions">
+              <a class="country-icon-link" href="./history.html?country=${encodeURIComponent(row.country)}" title="View history for ${esc(row.country)}" aria-label="View history for ${esc(row.country)}">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"></path><path d="m19 9-5 5-4-4-3 3"></path></svg>
+              </a>
+              <a class="country-icon-link" href="./sites.html?country=${encodeURIComponent(row.country)}" title="View sites for ${esc(row.country)}" aria-label="View sites for ${esc(row.country)}">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M7 8h10"></path><path d="M7 12h4"></path><path d="M7 16h7"></path></svg>
+              </a>
+            </span>
+          </div>
+        </td>
         <td class="number">${row.screened}</td>
         ${countryDeltaCell(row.screened, prev.screened)}
         <td class="number">${row.randomized}</td>
         ${countryDeltaCell(row.randomized, prev.randomized)}
-        ${ecvdCell(row.ecvd_randomized_percent)}
+        ${ecvdCell(row.ecvd_randomized_percent, fallbackCountryEcvdPercent(row.country, 'randomized'))}
         <td class="number">${row.screening}</td>
         ${countryDeltaCell(row.screening, prev.screening)}
-        ${ecvdCell(row.ecvd_screening_percent)}
+        ${ecvdCell(row.ecvd_screening_percent, fallbackCountryEcvdPercent(row.country, 'screening'))}
         <td class="number">${row.failed}</td>
         ${countryDeltaCell(row.failed, prev.failed)}
         <td class="number">${row.eot}</td>
