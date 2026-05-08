@@ -171,12 +171,17 @@ def parse_workbook(blob):
         'In Screening': {'yes': 0, 'total': 0},
     }
     ignored_subject_ids = load_ecvd_ignore_ids()
+    previous_subject_refs = {
+        str(row.get('A', '')).strip()
+        for row in data_rows
+        if str(row.get('A', '')).strip()
+    }
 
     for row in data_rows:
         previous_subject_number = str(row.get('A', '')).strip()
-        if previous_subject_number:
-            continue
         subject_number = str(row.get('B', '')).strip()
+        if subject_number and subject_number in previous_subject_refs:
+            continue
         exclude_from_ecvd = subject_number in ignored_subject_ids
         site = str(row.get('C', '')).strip()
         country = str(row.get('G', '')).strip()
