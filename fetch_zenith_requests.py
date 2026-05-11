@@ -190,7 +190,7 @@ def parse_workbook(blob):
         if not country or not status:
             continue
 
-        cvd_is_yes = cvd_value in {'Yes', 'High Risk for CVD'}
+        cvd_is_yes = cvd_value == 'Established CVD'
 
         if country not in by_country:
             by_country[country] = {
