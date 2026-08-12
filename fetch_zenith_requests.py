@@ -185,6 +185,7 @@ def parse_workbook(blob):
         'End of Treatment': 0,
     }
     established_cvd = {
+        'Screened': {'yes': 0, 'total': 0},
         'Randomized': {'yes': 0, 'total': 0},
         'In Screening': {'yes': 0, 'total': 0},
     }
@@ -218,6 +219,8 @@ def parse_workbook(blob):
                 'screening': 0,
                 'failed': 0,
                 'eot': 0,
+                'ecvd_screened_yes': 0,
+                'ecvd_screened_total': 0,
                 'ecvd_randomized_yes': 0,
                 'ecvd_randomized_total': 0,
                 'ecvd_screening_yes': 0,
@@ -235,6 +238,8 @@ def parse_workbook(blob):
                 'screening': 0,
                 'failed': 0,
                 'eot': 0,
+                'ecvd_screened_yes': 0,
+                'ecvd_screened_total': 0,
                 'ecvd_randomized_yes': 0,
                 'ecvd_randomized_total': 0,
                 'ecvd_screening_yes': 0,
@@ -249,10 +254,16 @@ def parse_workbook(blob):
             site_rec['screening'] += 1
             site_rec['screened'] += 1
             if not exclude_from_ecvd:
+                established_cvd['Screened']['total'] += 1
+                rec['ecvd_screened_total'] += 1
+                site_rec['ecvd_screened_total'] += 1
                 established_cvd['In Screening']['total'] += 1
                 rec['ecvd_screening_total'] += 1
                 site_rec['ecvd_screening_total'] += 1
                 if cvd_is_yes:
+                    established_cvd['Screened']['yes'] += 1
+                    rec['ecvd_screened_yes'] += 1
+                    site_rec['ecvd_screened_yes'] += 1
                     established_cvd['In Screening']['yes'] += 1
                     rec['ecvd_screening_yes'] += 1
                     site_rec['ecvd_screening_yes'] += 1
@@ -262,6 +273,14 @@ def parse_workbook(blob):
             rec['screened'] += 1
             site_rec['failed'] += 1
             site_rec['screened'] += 1
+            if not exclude_from_ecvd:
+                established_cvd['Screened']['total'] += 1
+                rec['ecvd_screened_total'] += 1
+                site_rec['ecvd_screened_total'] += 1
+                if cvd_is_yes:
+                    established_cvd['Screened']['yes'] += 1
+                    rec['ecvd_screened_yes'] += 1
+                    site_rec['ecvd_screened_yes'] += 1
         elif status == 'Randomized':
             overall['Randomized'] += 1
             rec['randomized'] += 1
@@ -269,10 +288,16 @@ def parse_workbook(blob):
             site_rec['randomized'] += 1
             site_rec['screened'] += 1
             if not exclude_from_ecvd:
+                established_cvd['Screened']['total'] += 1
+                rec['ecvd_screened_total'] += 1
+                site_rec['ecvd_screened_total'] += 1
                 established_cvd['Randomized']['total'] += 1
                 rec['ecvd_randomized_total'] += 1
                 site_rec['ecvd_randomized_total'] += 1
                 if cvd_is_yes:
+                    established_cvd['Screened']['yes'] += 1
+                    rec['ecvd_screened_yes'] += 1
+                    site_rec['ecvd_screened_yes'] += 1
                     established_cvd['Randomized']['yes'] += 1
                     rec['ecvd_randomized_yes'] += 1
                     site_rec['ecvd_randomized_yes'] += 1
@@ -282,6 +307,14 @@ def parse_workbook(blob):
             rec['screened'] += 1
             site_rec['eot'] += 1
             site_rec['screened'] += 1
+            if not exclude_from_ecvd:
+                established_cvd['Screened']['total'] += 1
+                rec['ecvd_screened_total'] += 1
+                site_rec['ecvd_screened_total'] += 1
+                if cvd_is_yes:
+                    established_cvd['Screened']['yes'] += 1
+                    rec['ecvd_screened_yes'] += 1
+                    site_rec['ecvd_screened_yes'] += 1
 
     overall['Screened'] = overall['In Screening'] + overall['Screen Failed'] + overall['Randomized'] + overall['End of Treatment']
     cvd_summary = {
@@ -294,6 +327,7 @@ def parse_workbook(blob):
     }
     countries = []
     for rec in by_country.values():
+        rec['ecvd_screened_percent'] = round((rec['ecvd_screened_yes'] / rec['ecvd_screened_total']) * 100) if rec['ecvd_screened_total'] else None
         rec['ecvd_randomized_percent'] = round((rec['ecvd_randomized_yes'] / rec['ecvd_randomized_total']) * 100) if rec['ecvd_randomized_total'] else None
         rec['ecvd_screening_percent'] = round((rec['ecvd_screening_yes'] / rec['ecvd_screening_total']) * 100) if rec['ecvd_screening_total'] else None
         countries.append(rec)
@@ -301,6 +335,7 @@ def parse_workbook(blob):
 
     sites = []
     for rec in by_site.values():
+        rec['ecvd_screened_percent'] = round((rec['ecvd_screened_yes'] / rec['ecvd_screened_total']) * 100) if rec['ecvd_screened_total'] else None
         rec['ecvd_randomized_percent'] = round((rec['ecvd_randomized_yes'] / rec['ecvd_randomized_total']) * 100) if rec['ecvd_randomized_total'] else None
         rec['ecvd_screening_percent'] = round((rec['ecvd_screening_yes'] / rec['ecvd_screening_total']) * 100) if rec['ecvd_screening_total'] else None
         sites.append(rec)

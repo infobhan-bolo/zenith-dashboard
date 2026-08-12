@@ -353,8 +353,8 @@ function renderTable() {
       total: row.ecvd_randomized_total,
     });
     const screenedTooltip = screenedTooltipText(countryScreenedSeries(row.country), row.country, {
-      ecvdYes: row.ecvd_screening_yes,
-      total: row.ecvd_screening_total,
+      ecvdYes: row.ecvd_screened_yes ?? row.ecvd_screening_yes,
+      total: row.ecvd_screened_total ?? row.ecvd_screening_total,
     });
     return `
       <tr>
