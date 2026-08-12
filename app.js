@@ -3,7 +3,7 @@ let sortDirection = 'desc';
 let showTooltipMetrics = false;
 let payload = { totals: {}, countries: [] };
 let historyRows = [];
-const hiddenMetricSortKeys = ['avg7_randomized', 'avg30_randomized', 'ecvd_randomized_yes', 'hrcvd_randomized'];
+const hiddenMetricSortKeys = ['sfr', 'avg7_randomized', 'avg30_randomized', 'ecvd_randomized_yes', 'hrcvd_randomized'];
 
 function derivePercent(bucket) {
   if (bucket === null || bucket === undefined) return null;
@@ -222,11 +222,16 @@ function hrcvdRandomizedCount(row) {
   return Math.max((row.ecvd_randomized_total || 0) - (row.ecvd_randomized_yes || 0), 0);
 }
 
+function countrySfrPercent(row) {
+  return deriveSfrPercent(row.screened, row.screening, row.failed);
+}
+
 function countrySortValue(row, key) {
   if (key === 'avg7_randomized' || key === 'avg30_randomized') {
     const averages = countryAverageMetrics(row.country);
     return key === 'avg7_randomized' ? averages.avg7 : averages.avg30;
   }
+  if (key === 'sfr') return countrySfrPercent(row);
   if (key === 'hrcvd_randomized') return hrcvdRandomizedCount(row);
   return row[key];
 }
@@ -287,9 +292,7 @@ function renderCountryHeaders() {
       <th class="metric-col"><button class="sort-btn" data-key="randomized"><span class="sort-indicator"></span> Randomized</button></th>
       <th class="delta-col">Δ</th>
       <th class="metric-col">eCVD %</th>
-      <th class="metric-col"><button class="sort-btn" data-key="screening"><span class="sort-indicator"></span> In Screening</button></th>
-      <th class="delta-col">Δ</th>
-      <th class="metric-col">eCVD %</th>
+      <th class="metric-col"><button class="sort-btn" data-key="sfr"><span class="sort-indicator"></span> SFR</button></th>
       <th class="metric-col"><button class="sort-btn" data-key="avg7_randomized"><span class="sort-indicator"></span> 7d rand/day</button></th>
       <th class="metric-col"><button class="sort-btn" data-key="avg30_randomized"><span class="sort-indicator"></span> 30d rand/day</button></th>
       <th class="metric-col"><button class="sort-btn" data-key="ecvd_randomized_yes"><span class="sort-indicator"></span> eCVD rand</button></th>
@@ -321,6 +324,7 @@ function renderTable() {
     const prev = prevMap.get(row.country) || {};
     const averages = countryAverageMetrics(row.country);
     const hrcvdRandomized = hrcvdRandomizedCount(row);
+    const sfrPercent = countrySfrPercent(row);
     const randomizedTooltip = averageTooltipText(countryRandomizedSeries(row.country), row.country, {
       ecvdYes: row.ecvd_randomized_yes,
       total: row.ecvd_randomized_total,
@@ -345,17 +349,18 @@ function renderTable() {
         <td class="number"${randomizedTooltip ? ` title="${esc(randomizedTooltip)}"` : ''}>${row.randomized}</td>
         ${countryDeltaCell(row.randomized, prev.randomized)}
         ${ecvdCell(row.ecvd_randomized_percent)}
-        <td class="number">${row.screening}</td>
-        ${countryDeltaCell(row.screening, prev.screening)}
-        ${ecvdCell(row.ecvd_screening_percent)}
         ${showTooltipMetrics
           ? `
+            <td class="number">${sfrPercent === null || sfrPercent === undefined ? '—' : `${sfrPercent}%`}</td>
             <td class="number">${formatAverageCell(averages.avg7)}</td>
             <td class="number">${formatAverageCell(averages.avg30)}</td>
             <td class="number">${formatSubstatValue(row.ecvd_randomized_yes)}</td>
             <td class="number">${formatSubstatValue(hrcvdRandomized)}</td>
           `
           : `
+            <td class="number">${row.screening}</td>
+            ${countryDeltaCell(row.screening, prev.screening)}
+            ${ecvdCell(row.ecvd_screening_percent)}
             <td class="number">${row.failed}</td>
             ${countryDeltaCell(row.failed, prev.failed)}
             <td class="number">${row.eot}</td>
@@ -387,7 +392,7 @@ function setupMetricToggle() {
   if (!toggle) return;
   toggle.addEventListener('change', () => {
     showTooltipMetrics = toggle.checked;
-    if (showTooltipMetrics && (sortKey === 'failed' || sortKey === 'eot')) {
+    if (showTooltipMetrics && (sortKey === 'screening' || sortKey === 'failed' || sortKey === 'eot')) {
       sortKey = 'randomized';
       sortDirection = 'desc';
     }
