@@ -2,6 +2,7 @@ let sortKey = 'randomized';
 let sortDirection = 'desc';
 let currentPayload = null;
 let currentCountry = '';
+let historyRows = [];
 
 function esc(s) {
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -21,6 +22,35 @@ function percentText(value) {
   return value === null || value === undefined ? '—' : `${value}%`;
 }
 
+function averageDailyNewRandomized(series, windowSize) {
+  if (!series || series.length < 2) return null;
+  const deltas = [];
+  for (let i = 1; i < series.length; i += 1) {
+    const curr = series[i] ?? 0;
+    const prev = series[i - 1] ?? 0;
+    deltas.push(curr - prev);
+  }
+  if (!deltas.length) return null;
+  const window = deltas.slice(-Math.min(windowSize, deltas.length));
+  return window.reduce((sum, value) => sum + value, 0) / window.length;
+}
+
+function countryRandomizedSeries(country) {
+  return historyRows
+    .map((snapshot) => (snapshot.countries || []).find((row) => row.country === country)?.randomized)
+    .filter((value) => value !== null && value !== undefined);
+}
+
+function formatAverageSummary(value) {
+  if (value === null || value === undefined) return '—';
+  return `${value.toFixed(1)}/day`;
+}
+
+function formatSubstatValue(value) {
+  if (value === null || value === undefined) return '—';
+  return `${value}`;
+}
+
 function summaryCard(label, value, badge = null, badgeLabel = 'eCVD') {
   return `
     <div class="summary-card summary-card-trend">
@@ -29,6 +59,36 @@ function summaryCard(label, value, badge = null, badgeLabel = 'eCVD') {
       <div class="summary-row">
         <div class="summary-main">
           <div class="summary-value">${value}</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderSummaryMetricsCard(country, totals) {
+  const series = countryRandomizedSeries(country);
+  const avg7 = averageDailyNewRandomized(series, 7);
+  const avg30 = averageDailyNewRandomized(series, 30);
+  const ecvd = totals.ecvd_randomized_total ? totals.ecvd_randomized_yes : null;
+  const hrcvd = totals.ecvd_randomized_total ? Math.max(totals.ecvd_randomized_total - totals.ecvd_randomized_yes, 0) : null;
+  return `
+    <div class="summary-card summary-metrics-card">
+      <div class="summary-metrics">
+        <div class="summary-metric">
+          <div class="summary-label">7D Rand/Day</div>
+          <div class="summary-metric-value">${formatAverageSummary(avg7)}</div>
+        </div>
+        <div class="summary-metric">
+          <div class="summary-label">30D Rand/Day</div>
+          <div class="summary-metric-value">${formatAverageSummary(avg30)}</div>
+        </div>
+        <div class="summary-metric">
+          <div class="summary-label">eCVD Randomized</div>
+          <div class="summary-metric-value">${formatSubstatValue(ecvd)}</div>
+        </div>
+        <div class="summary-metric">
+          <div class="summary-label">HRCVD Randomized</div>
+          <div class="summary-metric-value">${formatSubstatValue(hrcvd)}</div>
         </div>
       </div>
     </div>
@@ -87,7 +147,7 @@ function renderSummary(rows, country) {
     summaryCard('In Screening', totals.screening, screenPct),
     summaryCard('Screen Failed', totals.failed, sfrPct, 'SFR'),
     summaryCard('End of Treatment', totals.eot),
-  ].join('');
+  ].join('') + renderSummaryMetricsCard(country, totals);
 
   document.getElementById('site-table-title').textContent = country ? `${country} Site Totals` : 'Site Totals';
   const randomizedSites = rows.filter((row) => (row.randomized || 0) > 0).length;
@@ -171,9 +231,14 @@ function setupSorting() {
 async function loadSites() {
   const updated = document.getElementById('sites-updated-at');
   try {
-    const res = await fetch('./data.json?ts=' + Date.now(), { cache: 'no-store' });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const payload = await res.json();
+    const ts = Date.now();
+    const [dataRes, historyRes] = await Promise.all([
+      fetch(`./data.json?ts=${ts}`, { cache: 'no-store' }),
+      fetch(`./history_index.json?ts=${ts}`, { cache: 'no-store' }),
+    ]);
+    if (!dataRes.ok) throw new Error(`HTTP ${dataRes.status}`);
+    const payload = await dataRes.json();
+    historyRows = historyRes.ok ? await historyRes.json() : [];
     updated.textContent = `Snapshot loaded ${new Date(payload.updated_at).toLocaleString()}`;
     currentPayload = payload;
     const countries = countriesFromSites(payload.sites || []);
