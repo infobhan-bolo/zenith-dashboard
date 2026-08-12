@@ -66,7 +66,7 @@ function averageTooltipText(series, scopeLabel, randomizedMix = {}) {
   return lines.join('\n');
 }
 
-function screeningTooltipText(series, scopeLabel, screeningMix = {}) {
+function screenedTooltipText(series, scopeLabel, screeningMix = {}) {
   const avg7 = averageDailyNewRandomized(series, 7);
   const avg30 = averageDailyNewRandomized(series, 30);
   const total = screeningMix.total;
@@ -352,7 +352,7 @@ function renderTable() {
       ecvdYes: row.ecvd_randomized_yes,
       total: row.ecvd_randomized_total,
     });
-    const screeningTooltip = screeningTooltipText(countryScreenedSeries(row.country), row.country, {
+    const screenedTooltip = screenedTooltipText(countryScreenedSeries(row.country), row.country, {
       ecvdYes: row.ecvd_screening_yes,
       total: row.ecvd_screening_total,
     });
@@ -371,7 +371,7 @@ function renderTable() {
             </span>
           </div>
         </td>
-        <td class="number">${row.screened}</td>
+        <td class="number"${screenedTooltip ? ` title="${esc(screenedTooltip)}"` : ''}>${row.screened}</td>
         ${countryDeltaCell(row.screened, prev.screened)}
         <td class="number"${randomizedTooltip ? ` title="${esc(randomizedTooltip)}"` : ''}>${row.randomized}</td>
         ${countryDeltaCell(row.randomized, prev.randomized)}
@@ -385,7 +385,7 @@ function renderTable() {
             <td class="number">${formatSubstatValue(hrcvdRandomized)}</td>
           `
           : `
-            <td class="number"${screeningTooltip ? ` title="${esc(screeningTooltip)}"` : ''}>${row.screening}</td>
+            <td class="number">${row.screening}</td>
             ${countryDeltaCell(row.screening, prev.screening)}
             ${ecvdCell(row.ecvd_screening_percent)}
             <td class="number">${row.failed}</td>
