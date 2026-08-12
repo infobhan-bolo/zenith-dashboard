@@ -66,6 +66,23 @@ function averageTooltipText(series, scopeLabel, randomizedMix = {}) {
   return lines.join('\n');
 }
 
+function screeningTooltipText(series, scopeLabel, screeningMix = {}) {
+  const avg7 = averageDailyNewRandomized(series, 7);
+  const avg30 = averageDailyNewRandomized(series, 30);
+  const total = screeningMix.total;
+  const ecvd = screeningMix.ecvdYes;
+  const hrcvd = total === null || total === undefined || ecvd === null || ecvd === undefined
+    ? null
+    : Math.max(total - ecvd, 0);
+  return [
+    `${scopeLabel} new screened patients/day averages`,
+    `7-day screened/day: ${avg7 === null ? '—' : avg7.toFixed(1)}/day`,
+    `30-day screened/day: ${avg30 === null ? '—' : avg30.toFixed(1)}/day`,
+    `eCVD screened: ${ecvd === null || ecvd === undefined ? '—' : ecvd}`,
+    `HRCVD Screened: ${hrcvd === null ? '—' : hrcvd}`,
+  ].join('\n');
+}
+
 function overallRandomizedSeries() {
   return historyRows.map((row) => row.totals?.['Randomized'] || 0);
 }
@@ -85,6 +102,12 @@ function randomizedMixCounts(bucket) {
 function countryRandomizedSeries(country) {
   return historyRows
     .map((snapshot) => (snapshot.countries || []).find((row) => row.country === country)?.randomized)
+    .filter((value) => value !== null && value !== undefined);
+}
+
+function countryScreenedSeries(country) {
+  return historyRows
+    .map((snapshot) => (snapshot.countries || []).find((row) => row.country === country)?.screened)
     .filter((value) => value !== null && value !== undefined);
 }
 
@@ -329,6 +352,10 @@ function renderTable() {
       ecvdYes: row.ecvd_randomized_yes,
       total: row.ecvd_randomized_total,
     });
+    const screeningTooltip = screeningTooltipText(countryScreenedSeries(row.country), row.country, {
+      ecvdYes: row.ecvd_screening_yes,
+      total: row.ecvd_screening_total,
+    });
     return `
       <tr>
         <td>
@@ -358,7 +385,7 @@ function renderTable() {
             <td class="number">${formatSubstatValue(hrcvdRandomized)}</td>
           `
           : `
-            <td class="number">${row.screening}</td>
+            <td class="number"${screeningTooltip ? ` title="${esc(screeningTooltip)}"` : ''}>${row.screening}</td>
             ${countryDeltaCell(row.screening, prev.screening)}
             ${ecvdCell(row.ecvd_screening_percent)}
             <td class="number">${row.failed}</td>
