@@ -4,9 +4,13 @@ from pathlib import Path
 import json
 import subprocess
 import threading
+import os
+import sys
 
-BASE = Path('/Users/bolo/.openclaw/workspace/zenith-dashboard-requests')
-REFRESH_CMD = ['/Applications/Xcode.app/Contents/Developer/usr/bin/python3', str(BASE / 'fetch_zenith_requests.py'), 'refresh']
+BASE = Path(__file__).resolve().parent
+PORT = int(os.environ.get('ZENITH_DASHBOARD_PORT', '8766'))
+PYTHON_BIN = os.environ.get('PYTHON_BIN', sys.executable)
+REFRESH_CMD = [PYTHON_BIN, str(BASE / 'fetch_zenith_requests.py'), 'refresh']
 
 class Handler(SimpleHTTPRequestHandler):
     def do_GET(self):
@@ -22,7 +26,6 @@ class Handler(SimpleHTTPRequestHandler):
         return super().do_GET()
 
 if __name__ == '__main__':
-    import os
     os.chdir(BASE)
-    server = ThreadingHTTPServer(('0.0.0.0', 8766), Handler)
+    server = ThreadingHTTPServer(('0.0.0.0', PORT), Handler)
     server.serve_forever()

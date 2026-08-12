@@ -1,21 +1,35 @@
 #!/usr/bin/env python3
 import json
 import re
+import html
+import os
 from io import BytesIO
 from pathlib import Path
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlparse
 import zipfile
 import xml.etree.ElementTree as ET
 
 import requests
 
-WORKSPACE = Path('/Users/bolo/.openclaw/workspace')
+BASE_DIR = Path(__file__).resolve().parent
+DEFAULT_WORKSPACE = BASE_DIR.parent
+WORKSPACE = Path(os.environ.get('WORKSPACE_ROOT', str(DEFAULT_WORKSPACE))).expanduser()
 CREDS_PATH = WORKSPACE / 'CREDENTIALS.md'
-OUT_PATH = WORKSPACE / 'zenith-dashboard-requests' / 'export_probe.json'
+OUT_PATH = Path(os.environ.get('ZENITH_EXPORT_PROBE_PATH', str(BASE_DIR / 'export_probe.json'))).expanduser()
 EXPORT_URL = 'https://irt-prod0.suvoda.com/Alnylam_ALN-AGT01-008/Reports/Report/ExportToExcel/1547f779-d6da-41a5-965d-3bf29660942d'
 LOGIN_URL = 'https://prod001.suvoda.com/Suvoda/?app=ALN-AGT01-008&ReturnUrl=%2fAlnylam_ALN-AGT01-008%2fReports%2fEnrollmentSummary'
 BASE = 'https://prod001.suvoda.com'
 APP_NAME = 'ALN-AGT01-008'
+
+
+def password_change_required(response):
+    lower_blob = f"{response.url}\n{response.text}".lower()
+    path = urlparse(response.url).path.lower()
+    return (
+        '/account/changepassword' in path
+        or '<title>change password</title>' in lower_blob
+        or 'password expired' in lower_blob
+    )
 
 
 def extract_field(text, field):
@@ -41,7 +55,7 @@ def login_session():
     token = token_match.group(1)
 
     form_action_match = re.search(r'<form[^>]+action="([^"]+)"[^>]+method="post"', r.text, re.I)
-    action = form_action_match.group(1) if form_action_match else LOGIN_URL
+    action = html.unescape(form_action_match.group(1)) if form_action_match else LOGIN_URL
     post_url = urljoin(BASE, action)
 
     r2 = s.post(post_url, data={
@@ -51,9 +65,8 @@ def login_session():
         'LanguageId': 'en-US',
     }, timeout=30, allow_redirects=True)
 
-    lower_blob = f"{r2.url}\n{r2.text}".lower()
-    if 'password expired' in lower_blob and 'enrollmentsummary' not in lower_blob and 'blinded enrollment summary' not in lower_blob:
-        raise RuntimeError('Suvoda appears to be on the dedicated expired-password page. Stop automation and ask Ishir to update the password.')
+    if password_change_required(r2):
+        raise RuntimeError('Suvoda redirected login to Change Password. Stop automation and ask Ishir to update the password.')
 
     apps_res = s.post(urljoin(BASE, '/Suvoda/Home/Applications_Read'), data={
         'searchText': '',

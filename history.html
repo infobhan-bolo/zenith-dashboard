@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ZENITH Enrollment History</title>
-  <link rel="stylesheet" href="./styles.css?v=20260420b" />
+  <link rel="stylesheet" href="./styles.css?v=20260622a" />
 </head>
 <body>
   <div class="page">
@@ -17,10 +17,10 @@
       <div class="hero-side">
         <div class="pill-wrap">
           <div id="history-updated-at" class="pill">Loading history</div>
-          <div class="pill small">UI v20260420b</div>
+          <div class="pill small">UI v20260622a</div>
           <label class="muted small">View: <select id="trend-select"></select></label>
           <a href="/" class="refresh-link">Current Dashboard</a>
-          <a href="/sites.html" class="refresh-link">Sites</a>
+          <a href="/sites.html" id="sites-link" class="refresh-link">Sites</a>
         </div>
       </div>
     </header>
@@ -31,7 +31,7 @@
       <div class="card-header">
         <div>
           <h2 id="trend-title">Overall Trends</h2>
-          <span id="trend-subtitle" class="muted small">Daily totals with day-over-day deltas</span>
+          <span id="trend-subtitle" class="muted small">Loading randomized-per-day averages…</span>
         </div>
       </div>
       <div class="table-wrap">
@@ -61,6 +61,6 @@
     </section>
   </div>
 
-  <script src="./history.js?v=20260420b"></script>
+  <script src="./history.js?v=20260622a"></script>
 </body>
 </html>

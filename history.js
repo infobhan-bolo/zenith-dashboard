@@ -1,3 +1,5 @@
+let currentSitesPayload = null;
+
 function esc(s) {
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
@@ -7,6 +9,27 @@ function deltaText(curr, prev) {
   const d = curr - prev;
   if (d === 0) return '0';
   return d > 0 ? `+${d}` : `${d}`;
+}
+
+function averageNewRandomizedText(series, windowSize) {
+  if (!series || series.length < 2) return null;
+  const deltas = [];
+  for (let i = 1; i < series.length; i += 1) {
+    const curr = series[i]?.randomized ?? 0;
+    const prev = series[i - 1]?.randomized ?? 0;
+    deltas.push(curr - prev);
+  }
+  if (!deltas.length) return null;
+  const window = deltas.slice(-Math.min(windowSize, deltas.length));
+  const average = window.reduce((sum, value) => sum + value, 0) / window.length;
+  return `${average.toFixed(1)}/day`;
+}
+
+function randomizedAverageSubtitle(series) {
+  const avg7 = averageNewRandomizedText(series, 7);
+  const avg30 = averageNewRandomizedText(series, 30);
+  if (!avg7 && !avg30) return 'New randomized patients per day averages unavailable';
+  return `New randomized patients/day averages: 7-day ${avg7 || '—'} · 30-day ${avg30 || '—'}`;
 }
 
 function sparklinePath(values, width = 220, height = 56) {
@@ -154,6 +177,14 @@ function renderSelector(rows) {
     .join('');
 }
 
+function setCrossLinks(selection) {
+  const sitesLink = document.getElementById('sites-link');
+  if (!sitesLink) return;
+  sitesLink.href = selection && selection !== '__overall__'
+    ? `./sites.html?country=${encodeURIComponent(selection)}`
+    : './sites.html';
+}
+
 function initialSelection(rows) {
   const requested = new URLSearchParams(window.location.search).get('country');
   if (!requested) return '__overall__';
@@ -161,14 +192,23 @@ function initialSelection(rows) {
   return countries.has(requested) ? requested : '__overall__';
 }
 
+function countrySiteSubtitle(country) {
+  if (!currentSitesPayload || !country || country === '__overall__') return null;
+  const rows = (currentSitesPayload.sites || []).filter((row) => row.country === country);
+  const randomizedSites = rows.filter((row) => (row.randomized || 0) > 0).length;
+  const randomizedSitesPct = rows.length ? Math.round((randomizedSites / rows.length) * 100) : 0;
+  return `${rows.length} total sites · ${randomizedSites} sites with randomized patients (${randomizedSitesPct}%)`;
+}
+
 function renderView(rows, selection) {
   const title = document.getElementById('trend-title');
   const subtitle = document.getElementById('trend-subtitle');
   const series = metricsForSelection(rows, selection);
+  setCrossLinks(selection);
   title.textContent = selection === '__overall__' ? 'Overall Trends' : `${selection} Trends`;
   subtitle.textContent = selection === '__overall__'
-    ? 'Daily totals with day-over-day deltas'
-    : 'Daily country values with day-over-day deltas';
+    ? randomizedAverageSubtitle(series)
+    : `${countrySiteSubtitle(selection) || 'Country view'} · ${randomizedAverageSubtitle(series)}`;
   renderSparklines(series);
   renderTrendTable(series);
 }
@@ -176,9 +216,18 @@ function renderView(rows, selection) {
 async function loadHistory() {
   const updated = document.getElementById('history-updated-at');
   try {
-    const res = await fetch('./history_index.json?ts=' + Date.now(), { cache: 'no-store' });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const rows = await res.json();
+    const ts = Date.now();
+    const [historyRes, currentRes] = await Promise.all([
+      fetch(`./history_index.json?ts=${ts}`, { cache: 'no-store' }),
+      fetch(`./data.json?ts=${ts}`, { cache: 'no-store' }),
+    ]);
+    if (!historyRes.ok) throw new Error(`HTTP ${historyRes.status}`);
+    if (!currentRes.ok) throw new Error(`HTTP ${currentRes.status}`);
+    const [rows, currentPayload] = await Promise.all([
+      historyRes.json(),
+      currentRes.json(),
+    ]);
+    currentSitesPayload = currentPayload;
     updated.textContent = `Loaded ${rows.length} stored snapshot${rows.length === 1 ? '' : 's'}`;
     if (!rows.length) {
       document.getElementById('history-body').innerHTML = '<tr><td colspan="13" class="muted">No stored history yet.</td></tr>';

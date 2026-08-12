@@ -35,6 +35,14 @@ function initialCountry(countries) {
   return countries[0] || '';
 }
 
+function setCrossLinks(country) {
+  const historyLink = document.getElementById('history-link');
+  if (!historyLink) return;
+  historyLink.href = country
+    ? `./history.html?country=${encodeURIComponent(country)}`
+    : './history.html';
+}
+
 function renderSelector(countries, selection) {
   const select = document.getElementById('site-country-select');
   select.innerHTML = countries.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
@@ -71,6 +79,10 @@ function renderSummary(rows, country) {
   ].join('');
 
   document.getElementById('site-table-title').textContent = country ? `${country} Site Totals` : 'Site Totals';
+  const randomizedSites = rows.filter((row) => (row.randomized || 0) > 0).length;
+  const randomizedSitesPct = rows.length ? Math.round((randomizedSites / rows.length) * 100) : 0;
+  document.getElementById('site-table-subtitle').textContent =
+    `${rows.length} total sites · ${randomizedSites} sites with randomized patients (${randomizedSitesPct}%)`;
 }
 
 function sortedRows(rows) {
@@ -121,6 +133,7 @@ function renderTable(rows) {
 function renderView(payload, country) {
   const rows = (payload.sites || []).filter(row => row.country === country)
     .sort((a, b) => (b.randomized - a.randomized) || a.site.localeCompare(b.site));
+  setCrossLinks(country);
   renderSummary(rows, country);
   renderTable(rows);
 }

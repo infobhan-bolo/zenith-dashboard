@@ -4,26 +4,45 @@ import re
 import sys
 import zipfile
 import xml.etree.ElementTree as ET
+import html
+import os
 from datetime import datetime
 from io import BytesIO
 from pathlib import Path
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlparse
 from zoneinfo import ZoneInfo
 import csv
 
 import requests
 
-WORKSPACE = Path('/Users/bolo/.openclaw/workspace')
+BASE_DIR = Path(__file__).resolve().parent
+DEFAULT_WORKSPACE = BASE_DIR.parent
+WORKSPACE = Path(os.environ.get('WORKSPACE_ROOT', str(DEFAULT_WORKSPACE))).expanduser()
 DASH_DIR = WORKSPACE / 'zenith-dashboard-requests'
-HISTORY_DIR = WORKSPACE / 'zenith-history'
-DATA_PATH = DASH_DIR / 'data.json'
-CREDS_PATH = WORKSPACE / 'CREDENTIALS.md'
-IGNORE_IDS_PATH = Path('/Users/bolo/ids_to_ignore.csv')
+HISTORY_DIR = Path(os.environ.get('ZENITH_HISTORY_DIR', str(WORKSPACE / 'zenith-history'))).expanduser()
+DATA_PATH = Path(os.environ.get('ZENITH_DATA_PATH', str(DASH_DIR / 'data.json'))).expanduser()
+CREDS_PATH = Path(os.environ.get('CREDENTIALS_PATH', str(WORKSPACE / 'CREDENTIALS.md'))).expanduser()
+IGNORE_IDS_PATH = Path(os.environ.get('IGNORE_IDS_PATH', str(WORKSPACE / 'ids_to_ignore.csv'))).expanduser()
+PYTHON_BIN = os.environ.get('PYTHON_BIN', sys.executable)
 TZ = ZoneInfo('America/New_York')
 LOGIN_URL = 'https://prod001.suvoda.com/Suvoda/?app=ALN-AGT01-008&ReturnUrl=%2fAlnylam_ALN-AGT01-008%2fReports%2fEnrollmentSummary'
 BASE = 'https://prod001.suvoda.com'
 APP_NAME = 'ALN-AGT01-008'
 EXPORT_URL = 'https://irt-prod0.suvoda.com/Alnylam_ALN-AGT01-008/Reports/Report/ExportToExcel/1547f779-d6da-41a5-965d-3bf29660942d'
+
+
+def password_change_required(response):
+    lower_blob = f"{response.url}\n{response.text}".lower()
+    path = urlparse(response.url).path.lower()
+    return (
+        '/account/changepassword' in path
+        or '<title>change password</title>' in lower_blob
+        or 'password expired' in lower_blob
+    )
+
+
+def normalize_country_name(country):
+    return country.split(',', 1)[0].strip()
 
 
 def extract_field(text, field):
@@ -49,7 +68,7 @@ def login_session():
     token = token_match.group(1)
 
     form_action_match = re.search(r'<form[^>]+action="([^"]+)"[^>]+method="post"', r.text, re.I)
-    action = form_action_match.group(1) if form_action_match else LOGIN_URL
+    action = html.unescape(form_action_match.group(1)) if form_action_match else LOGIN_URL
     post_url = urljoin(BASE, action)
 
     r2 = s.post(post_url, data={
@@ -59,9 +78,8 @@ def login_session():
         'LanguageId': 'en-US',
     }, timeout=30, allow_redirects=True)
 
-    lower_blob = f"{r2.url}\n{r2.text}".lower()
-    if 'password expired' in lower_blob and 'enrollmentsummary' not in lower_blob and 'blinded enrollment summary' not in lower_blob:
-        raise RuntimeError('Suvoda appears to be on the dedicated expired-password page. Stop automation and ask Ishir to update the password.')
+    if password_change_required(r2):
+        raise RuntimeError('Suvoda redirected login to Change Password. Stop automation and ask Ishir to update the password.')
 
     apps_res = s.post(urljoin(BASE, '/Suvoda/Home/Applications_Read'), data={
         'searchText': '',
@@ -184,7 +202,7 @@ def parse_workbook(blob):
             continue
         exclude_from_ecvd = subject_number in ignored_subject_ids
         site = str(row.get('C', '')).strip()
-        country = str(row.get('G', '')).strip()
+        country = normalize_country_name(str(row.get('G', '')).strip())
         status = str(row.get('H', '')).strip()
         cvd_value = str(row.get('P', '')).strip()
         if not country or not status:
@@ -308,7 +326,7 @@ def store_snapshot(payload):
     out = HISTORY_DIR / f'{stamp}.json'
     out.write_text(json.dumps(payload, indent=2))
     import subprocess
-    subprocess.check_call(['python3', str(DASH_DIR / 'build_history_index.py')])
+    subprocess.check_call([PYTHON_BIN, str(DASH_DIR / 'build_history_index.py')])
     return out
 
 

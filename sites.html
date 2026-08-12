@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ZENITH Site Totals</title>
-  <link rel="stylesheet" href="./styles.css?v=20260420c" />
+  <link rel="stylesheet" href="./styles.css?v=20260430a" />
 </head>
 <body>
   <div class="page">
@@ -17,10 +17,10 @@
       <div class="hero-side">
         <div class="pill-wrap">
           <div id="sites-updated-at" class="pill">Loading sites</div>
-          <div class="pill small">UI v20260420c</div>
+          <div class="pill small">UI v20260430a</div>
           <label class="muted small">Country: <select id="site-country-select"></select></label>
           <a href="/" class="refresh-link">Current Dashboard</a>
-          <a href="/history.html" class="refresh-link">History</a>
+          <a href="/history.html" id="history-link" class="refresh-link">History</a>
         </div>
       </div>
     </header>
@@ -31,7 +31,7 @@
       <div class="card-header">
         <div>
           <h2 id="site-table-title">Site Totals</h2>
-          <span class="muted small">Current site totals for the selected country</span>
+          <span id="site-table-subtitle" class="muted small">Current site totals for the selected country</span>
         </div>
       </div>
       <div class="table-wrap">
@@ -56,6 +56,6 @@
     </section>
   </div>
 
-  <script src="./sites.js?v=20260420c"></script>
+  <script src="./sites.js?v=20260430a"></script>
 </body>
 </html>
