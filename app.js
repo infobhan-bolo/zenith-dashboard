@@ -15,6 +15,12 @@ function derivePercent(bucket) {
   return Math.round((yes / total) * 100);
 }
 
+function deriveSfrPercent(screened, screening, failed) {
+  const denominator = (screened || 0) - (screening || 0);
+  if (denominator <= 0) return null;
+  return Math.round(((failed || 0) / denominator) * 100);
+}
+
 function esc(s) {
   return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
@@ -168,6 +174,14 @@ function renderSummary() {
       : item.label === 'In Screening'
         ? derivePercent(cvd['In Screening'])
         : null;
+    const sfrPercent = item.label === 'Screen Failed'
+      ? deriveSfrPercent(payload.totals['Screened'], payload.totals['In Screening'], payload.totals['Screen Failed'])
+      : null;
+    const cornerText = cvdPercent !== null && cvdPercent !== undefined
+      ? `${cvdPercent}% eCVD`
+      : sfrPercent !== null && sfrPercent !== undefined
+        ? `${sfrPercent}% SFR`
+        : '';
     const tooltip = item.label === 'Randomized'
       ? averageTooltipText(overallRandomizedSeries(), 'Overall', {
           ecvdYes: cvd['Randomized']?.yes,
@@ -178,7 +192,7 @@ function renderSummary() {
     const path = sparklinePath(series);
     return `
       <div class="summary-card summary-card-trend">
-        <div class="summary-card-corner ${cvdPercent === null || cvdPercent === undefined ? 'hidden' : ''}">${cvdPercent === null || cvdPercent === undefined ? '' : `${cvdPercent}% eCVD`}</div>
+        <div class="summary-card-corner ${cornerText ? '' : 'hidden'}">${cornerText}</div>
         <div class="summary-label summary-label-full">${item.label}</div>
         <div class="summary-row">
           <div class="summary-main">
