@@ -11,10 +11,20 @@ function eCVDText(value) {
   return value === null || value === undefined ? '—' : `${value}%`;
 }
 
-function summaryCard(label, value, badge = null) {
+function deriveSfrPercent(screened, screening, failed) {
+  const denominator = (screened || 0) - (screening || 0);
+  if (denominator <= 0) return null;
+  return Math.round(((failed || 0) / denominator) * 100);
+}
+
+function percentText(value) {
+  return value === null || value === undefined ? '—' : `${value}%`;
+}
+
+function summaryCard(label, value, badge = null, badgeLabel = 'eCVD') {
   return `
     <div class="summary-card summary-card-trend">
-      <div class="summary-card-corner ${badge === null || badge === undefined ? 'hidden' : ''}">${badge === null || badge === undefined ? '' : `${badge}% eCVD`}</div>
+      <div class="summary-card-corner ${badge === null || badge === undefined ? 'hidden' : ''}">${badge === null || badge === undefined ? '' : `${badge}% ${badgeLabel}`}</div>
       <div class="summary-label summary-label-full">${label}</div>
       <div class="summary-row">
         <div class="summary-main">
@@ -69,12 +79,13 @@ function renderSummary(rows, country) {
 
   const randPct = totals.ecvd_randomized_total ? Math.round((totals.ecvd_randomized_yes / totals.ecvd_randomized_total) * 100) : null;
   const screenPct = totals.ecvd_screening_total ? Math.round((totals.ecvd_screening_yes / totals.ecvd_screening_total) * 100) : null;
+  const sfrPct = deriveSfrPercent(totals.screened, totals.screening, totals.failed);
 
   document.getElementById('site-summary-grid').innerHTML = [
     summaryCard('Screened', totals.screened),
     summaryCard('Randomized', totals.randomized, randPct),
     summaryCard('In Screening', totals.screening, screenPct),
-    summaryCard('Screen Failed', totals.failed),
+    summaryCard('Screen Failed', totals.failed, sfrPct, 'SFR'),
     summaryCard('End of Treatment', totals.eot),
   ].join('');
 
@@ -87,8 +98,8 @@ function renderSummary(rows, country) {
 
 function sortedRows(rows) {
   return [...rows].sort((a, b) => {
-    const av = a[sortKey];
-    const bv = b[sortKey];
+    const av = sortKey === 'sfr' ? deriveSfrPercent(a.screened, a.screening, a.failed) : a[sortKey];
+    const bv = sortKey === 'sfr' ? deriveSfrPercent(b.screened, b.screening, b.failed) : b[sortKey];
     let cmp = 0;
     if (typeof av === 'string' || typeof bv === 'string') {
       cmp = String(av || '').localeCompare(String(bv || ''));
@@ -111,22 +122,26 @@ function updateSortIndicators() {
 function renderTable(rows) {
   const body = document.getElementById('site-body');
   if (!rows.length) {
-    body.innerHTML = '<tr><td colspan="8" class="muted">No site totals available for this country.</td></tr>';
+    body.innerHTML = '<tr><td colspan="9" class="muted">No site totals available for this country.</td></tr>';
     updateSortIndicators();
     return;
   }
-  body.innerHTML = sortedRows(rows).map(row => `
-    <tr>
-      <td>${esc(row.site)}</td>
-      <td class="number">${row.screened}</td>
-      <td class="number">${row.randomized}</td>
-      <td class="number ecvd-cell ${row.ecvd_randomized_percent === null || row.ecvd_randomized_percent === undefined ? 'blank' : ''}">${eCVDText(row.ecvd_randomized_percent)}</td>
-      <td class="number">${row.screening}</td>
-      <td class="number ecvd-cell ${row.ecvd_screening_percent === null || row.ecvd_screening_percent === undefined ? 'blank' : ''}">${eCVDText(row.ecvd_screening_percent)}</td>
-      <td class="number">${row.failed}</td>
-      <td class="number">${row.eot}</td>
-    </tr>
-  `).join('');
+  body.innerHTML = sortedRows(rows).map(row => {
+    const sfrPct = deriveSfrPercent(row.screened, row.screening, row.failed);
+    return `
+      <tr>
+        <td>${esc(row.site)}</td>
+        <td class="number">${row.screened}</td>
+        <td class="number">${row.randomized}</td>
+        <td class="number ecvd-cell ${row.ecvd_randomized_percent === null || row.ecvd_randomized_percent === undefined ? 'blank' : ''}">${eCVDText(row.ecvd_randomized_percent)}</td>
+        <td class="number">${row.screening}</td>
+        <td class="number ecvd-cell ${row.ecvd_screening_percent === null || row.ecvd_screening_percent === undefined ? 'blank' : ''}">${eCVDText(row.ecvd_screening_percent)}</td>
+        <td class="number">${row.failed}</td>
+        <td class="number">${percentText(sfrPct)}</td>
+        <td class="number">${row.eot}</td>
+      </tr>
+    `;
+  }).join('');
   updateSortIndicators();
 }
 
@@ -172,7 +187,7 @@ async function loadSites() {
     };
   } catch (err) {
     updated.textContent = 'Site totals load failed';
-    document.getElementById('site-body').innerHTML = `<tr><td colspan="8" class="muted">${esc(String(err))}</td></tr>`;
+    document.getElementById('site-body').innerHTML = `<tr><td colspan="9" class="muted">${esc(String(err))}</td></tr>`;
   }
 }
 
