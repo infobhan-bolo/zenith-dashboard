@@ -87,6 +87,10 @@ function overallRandomizedSeries() {
   return historyRows.map((row) => row.totals?.['Randomized'] || 0);
 }
 
+function overallScreenedSeries() {
+  return historyRows.map((row) => row.totals?.['Screened'] || 0);
+}
+
 function randomizedMixCounts(bucket) {
   const total = bucket?.total;
   const ecvd = bucket?.yes;
@@ -134,29 +138,44 @@ function formatSubstatValue(value, suffix = '') {
   return `${value}${suffix}`;
 }
 
-function renderSummaryMetricsCard(randomizedBucket) {
+function screenedMetricValues(screenedBucket) {
+  const avg7 = averageDailyNewRandomized(overallScreenedSeries(), 7);
+  const avg30 = averageDailyNewRandomized(overallScreenedSeries(), 30);
+  const mix = randomizedMixCounts(screenedBucket);
+  return {
+    avg7: formatAverageSummary(avg7),
+    avg30: formatAverageSummary(avg30),
+    ecvd: formatSubstatValue(mix.ecvd),
+    hrcvd: formatSubstatValue(mix.hrcvd),
+  };
+}
+
+function renderSummaryMetricsCard(randomizedBucket, screenedBucket) {
   const avg7 = averageDailyNewRandomized(overallRandomizedSeries(), 7);
   const avg30 = averageDailyNewRandomized(overallRandomizedSeries(), 30);
   const mix = randomizedMixCounts(randomizedBucket);
+  const screened = screenedMetricValues(screenedBucket);
+  const metrics = [
+    ['7D Rand/Day', formatAverageSummary(avg7), '7D Scr/Day', screened.avg7],
+    ['30D Rand/Day', formatAverageSummary(avg30), '30D Scr/Day', screened.avg30],
+    ['eCVD Randomized', formatSubstatValue(mix.ecvd), 'eCVD Screened', screened.ecvd],
+    ['HRCVD Randomized', formatSubstatValue(mix.hrcvd), 'HRCVD Screened', screened.hrcvd],
+  ];
   return `
     <div class="summary-card summary-metrics-card">
       <div class="summary-metrics">
-        <div class="summary-metric">
-          <div class="summary-label">7D Rand/Day</div>
-          <div class="summary-metric-value">${formatAverageSummary(avg7)}</div>
-        </div>
-        <div class="summary-metric">
-          <div class="summary-label">30D Rand/Day</div>
-          <div class="summary-metric-value">${formatAverageSummary(avg30)}</div>
-        </div>
-        <div class="summary-metric">
-          <div class="summary-label">eCVD Randomized</div>
-          <div class="summary-metric-value">${formatSubstatValue(mix.ecvd)}</div>
-        </div>
-        <div class="summary-metric">
-          <div class="summary-label">HRCVD Randomized</div>
-          <div class="summary-metric-value">${formatSubstatValue(mix.hrcvd)}</div>
-        </div>
+        ${metrics.map(([randomizedLabel, randomizedValue, screenedLabel, screenedValue]) => `
+          <div class="summary-metric">
+            <div class="summary-metric-line">
+              <div class="summary-label">${randomizedLabel}</div>
+              <div class="summary-metric-value">${randomizedValue}</div>
+            </div>
+            <div class="summary-metric-line">
+              <div class="summary-label">${screenedLabel}</div>
+              <div class="summary-metric-value">${screenedValue}</div>
+            </div>
+          </div>
+        `).join('')}
       </div>
     </div>
   `;
@@ -178,6 +197,7 @@ function renderSummary() {
   const latestStored = historyRows.length ? historyRows[historyRows.length - 1] : null;
   const previousStored = historyRows.length > 1 ? historyRows[historyRows.length - 2] : null;
   const randomizedBucket = payload.established_cvd?.['Randomized'];
+  const screenedBucket = payload.established_cvd?.['Screened'];
   const ordered = [
     { label: 'Screened', value: payload.totals['Screened'] || 0 },
     { label: 'Randomized', value: payload.totals['Randomized'] || 0 },
@@ -210,6 +230,11 @@ function renderSummary() {
           ecvdYes: cvd['Randomized']?.yes,
           total: cvd['Randomized']?.total,
         })
+      : item.label === 'Screened'
+        ? screenedTooltipText(overallScreenedSeries(), 'Overall', {
+            ecvdYes: cvd['Screened']?.yes,
+            total: cvd['Screened']?.total,
+          })
       : '';
     if (!series.length) series.push(item.value);
     const path = sparklinePath(series);
@@ -228,7 +253,7 @@ function renderSummary() {
         </div>
       </div>
     `;
-  }).join('') + renderSummaryMetricsCard(randomizedBucket);
+  }).join('') + renderSummaryMetricsCard(randomizedBucket, screenedBucket);
 }
 
 function previousCountryMap() {

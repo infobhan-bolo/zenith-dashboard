@@ -116,6 +116,11 @@ h2 { margin: 0; font-size: 22px; }
 .summary-metric {
   min-width: 0;
 }
+.summary-metric-line + .summary-metric-line {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
 .summary-metric .summary-label {
   margin-bottom: 6px;
 }
