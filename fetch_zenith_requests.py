@@ -303,20 +303,30 @@ def parse_workbook(blob):
                     site_rec['ecvd_randomized_yes'] += 1
         elif status == 'End of Treatment':
             overall['End of Treatment'] += 1
+            overall['Randomized'] += 1
             rec['eot'] += 1
+            rec['randomized'] += 1
             rec['screened'] += 1
             site_rec['eot'] += 1
+            site_rec['randomized'] += 1
             site_rec['screened'] += 1
             if not exclude_from_ecvd:
                 established_cvd['Screened']['total'] += 1
                 rec['ecvd_screened_total'] += 1
                 site_rec['ecvd_screened_total'] += 1
+                established_cvd['Randomized']['total'] += 1
+                rec['ecvd_randomized_total'] += 1
+                site_rec['ecvd_randomized_total'] += 1
                 if cvd_is_yes:
                     established_cvd['Screened']['yes'] += 1
                     rec['ecvd_screened_yes'] += 1
                     site_rec['ecvd_screened_yes'] += 1
+                    established_cvd['Randomized']['yes'] += 1
+                    rec['ecvd_randomized_yes'] += 1
+                    site_rec['ecvd_randomized_yes'] += 1
 
-    overall['Screened'] = overall['In Screening'] + overall['Screen Failed'] + overall['Randomized'] + overall['End of Treatment']
+    # End of Treatment patients are also randomized, so do not count them twice.
+    overall['Screened'] = overall['In Screening'] + overall['Screen Failed'] + overall['Randomized']
     cvd_summary = {
         key: {
             'yes': vals['yes'],
@@ -345,6 +355,7 @@ def parse_workbook(blob):
 
 def write_dashboard(totals, rows, sites, cvd_summary):
     payload = {
+        'calculation_version': 2,
         'updated_at': datetime.now(TZ).isoformat(),
         'totals': totals,
         'countries': rows,
