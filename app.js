@@ -1,9 +1,11 @@
 let sortKey = 'randomized';
 let sortDirection = 'desc';
 let showTooltipMetrics = false;
+let showBigThreeOnly = false;
 let payload = { totals: {}, countries: [] };
 let historyRows = [];
 const hiddenMetricSortKeys = ['sfr', 'avg7_randomized', 'avg30_randomized', 'ecvd_randomized_yes', 'hrcvd_randomized'];
+const bigThreeCountries = new Set(['China', 'Japan', 'Germany']);
 
 function derivePercent(bucket) {
   if (bucket === null || bucket === undefined) return null;
@@ -285,7 +287,9 @@ function countrySortValue(row, key) {
 }
 
 function sortedCountries() {
-  const rows = [...(payload.countries || [])];
+  const rows = (payload.countries || []).filter((row) => (
+    !showBigThreeOnly || bigThreeCountries.has(row.country)
+  ));
   rows.sort((a, b) => {
     const av = countrySortValue(a, sortKey);
     const bv = countrySortValue(b, sortKey);
@@ -458,6 +462,15 @@ function setupMetricToggle() {
   });
 }
 
+function setupBigThreeToggle() {
+  const toggle = document.getElementById('big-three-toggle');
+  if (!toggle) return;
+  toggle.addEventListener('change', () => {
+    showBigThreeOnly = toggle.checked;
+    renderTable();
+  });
+}
+
 async function loadHistory() {
   try {
     const res = await fetch(`./history_index.json?ts=${Date.now()}`, { cache: 'no-store' });
@@ -494,6 +507,7 @@ function setupRefreshLink() {
 
 setupSorting();
 setupMetricToggle();
+setupBigThreeToggle();
 setupRefreshLink();
 loadData().catch(() => {
   document.getElementById('updated-at').textContent = 'Load failed';
