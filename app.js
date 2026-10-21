@@ -4,7 +4,7 @@ let showTooltipMetrics = false;
 let showBigThreeOnly = false;
 let payload = { totals: {}, countries: [] };
 let historyRows = [];
-const hiddenMetricSortKeys = ['sfr', 'avg7_randomized', 'avg30_randomized', 'ecvd_randomized_yes', 'hrcvd_randomized'];
+const hiddenMetricSortKeys = ['sfr', 'avg7_randomized', 'avg30_randomized', 'ecvd_randomized_yes', 'hrcvd_randomized', 'ecvd_screening_percent'];
 const bigThreeCountries = new Set(['China', 'Japan', 'Germany']);
 
 function derivePercent(bucket) {
@@ -343,7 +343,7 @@ function renderCountryHeaders() {
       <th class="delta-col">Δ</th>
       <th class="metric-col"><button class="sort-btn" data-key="randomized"><span class="sort-indicator"></span> Randomized</button></th>
       <th class="delta-col">Δ</th>
-      <th class="metric-col">eCVD %</th>
+      <th class="metric-col"><button class="sort-btn" data-key="ecvd_randomized_percent"><span class="sort-indicator"></span> eCVD %</button></th>
       <th class="metric-col"><button class="sort-btn" data-key="sfr"><span class="sort-indicator"></span> SFR</button></th>
       <th class="metric-col"><button class="sort-btn" data-key="avg7_randomized"><span class="sort-indicator"></span> 7d rand/day</button></th>
       <th class="metric-col"><button class="sort-btn" data-key="avg30_randomized"><span class="sort-indicator"></span> 30d rand/day</button></th>
@@ -356,10 +356,10 @@ function renderCountryHeaders() {
       <th class="delta-col">Δ</th>
       <th class="metric-col"><button class="sort-btn" data-key="randomized"><span class="sort-indicator"></span> Randomized</button></th>
       <th class="delta-col">Δ</th>
-      <th class="metric-col">eCVD %</th>
+      <th class="metric-col"><button class="sort-btn" data-key="ecvd_randomized_percent"><span class="sort-indicator"></span> eCVD %</button></th>
       <th class="metric-col"><button class="sort-btn" data-key="screening"><span class="sort-indicator"></span> In Screening</button></th>
       <th class="delta-col">Δ</th>
-      <th class="metric-col">eCVD %</th>
+      <th class="metric-col"><button class="sort-btn" data-key="ecvd_screening_percent"><span class="sort-indicator"></span> eCVD %</button></th>
       <th class="metric-col"><button class="sort-btn" data-key="failed"><span class="sort-indicator"></span> Screen Failed</button></th>
       <th class="delta-col">Δ</th>
       <th class="metric-col"><button class="sort-btn" data-key="eot"><span class="sort-indicator"></span> End of Treatment</button></th>
